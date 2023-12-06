@@ -1,9 +1,7 @@
 package io.mohajistudio.tangerine.prototype.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import io.mohajistudio.tangerine.prototype.dto.RegisterDTO;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -26,6 +24,10 @@ public class MemberProfile extends BaseEntity {
     @Column(length = 20)
     private String nickname;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     Member member;
+
+    public static MemberProfile createMemberProfileFrom(RegisterDTO registerDTO, Member member) {
+        return MemberProfile.builder().birthday(registerDTO.getBirthday()).phone(registerDTO.getPhone()).sex(registerDTO.getSex()).thumbnail(registerDTO.getThumbnail()).nickname(registerDTO.getNickname()).member(member).build();
+    }
 }

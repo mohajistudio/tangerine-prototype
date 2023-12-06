@@ -3,14 +3,12 @@ package io.mohajistudio.tangerine.prototype.entity;
 import io.mohajistudio.tangerine.prototype.enums.Provider;
 import io.mohajistudio.tangerine.prototype.enums.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Builder
+@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,15 +16,18 @@ import java.util.List;
 public class Member extends BaseEntity {
     private String refreshToken;
 
-    @Column(length = 10)
+    @Column(length = 50, nullable = false, unique = true)
+    private String email;
+
+    @Column(length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(length = 10)
+    @Column(length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private MemberProfile memberProfile;
 
     @OneToMany(mappedBy = "member")
@@ -53,7 +54,11 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<FavoritePost> favoritePosts;
 
-    public static Member createMember(Provider provider) {
-        return Member.builder().provider(provider).role(Role.MEMBER).build();
+    public static Member createMember(Provider provider, String email) {
+        return Member.builder().provider(provider).role(Role.MEMBER).email(email).build();
+    }
+
+    public static Member createGuest(Provider provider, String email) {
+        return Member.builder().provider(provider).role(Role.GUEST).email(email).build();
     }
 }

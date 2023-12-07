@@ -1,15 +1,20 @@
 package io.mohajistudio.tangerine.prototype.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Provider {
-    KAKAO("kakao"),
-    NAVER("naver"),
-    GOOGLE("google"),
-    APPLE("apple");
+    KAKAO("kakao", "카카오"),
+    NAVER("naver", "네이버"),
+    GOOGLE("google", "구글"),
+    APPLE("apple", "애플");
 
     private final String value;
+    private final String koreanName;
 
-    Provider(String value) {
+    Provider(String value, String koreanName) {
         this.value = value;
+        this.koreanName = koreanName;
     }
 
     public static Provider fromValue(String value) {

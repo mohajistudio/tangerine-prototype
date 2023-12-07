@@ -28,7 +28,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        PrintWriter writer = response.getWriter();
         JsonObject jsonObject = new JsonObject();
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -41,6 +40,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String provider = oAuth2User.getAttribute("provider");
         String role = oAuth2User.getAuthorities().stream().findFirst().orElseThrow(IllegalAccessError::new).getAuthority();
         GeneratedTokenDTO generatedTokenDTO;
+
         if (!registered) {
             generatedTokenDTO = jwtProvider.generateGuestToken(id, email, provider, role);
             response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -49,8 +49,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             generatedTokenDTO = jwtProvider.generateTokens(id, email, provider, role);
             jsonObject.addProperty("isRegistered", true);
         }
+
         jsonObject.addProperty("accessToken", generatedTokenDTO.getAccessToken());
         jsonObject.addProperty("refreshToken", generatedTokenDTO.getRefreshToken());
-        writer.write(jsonObject.toString());
+        response.getWriter().write(jsonObject.toString());
     }
 }

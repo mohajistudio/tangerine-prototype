@@ -3,6 +3,7 @@ package io.mohajistudio.tangerine.prototype.security.service;
 import io.mohajistudio.tangerine.prototype.entity.Member;
 import io.mohajistudio.tangerine.prototype.entity.MemberProfile;
 import io.mohajistudio.tangerine.prototype.enums.Provider;
+import io.mohajistudio.tangerine.prototype.exception.CustomAuthenticationException;
 import io.mohajistudio.tangerine.prototype.repository.MemberProfileRepository;
 import io.mohajistudio.tangerine.prototype.repository.MemberRepository;
 import io.mohajistudio.tangerine.prototype.security.OAuth2Attribute;
@@ -38,8 +39,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         Map<String, Object> originAttributes = oAuth2User.getAttributes();
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        String userNameAttributeName = userRequest.getClientRegistration()
-                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
         OAuth2Attribute oAuth2Attribute = OAuth2Attribute.of(registrationId, userNameAttributeName, originAttributes);
         Map<String, Object> memberAttribute = oAuth2Attribute.convertToMap();
@@ -51,6 +51,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             memberRepository.save(member);
         } else {
             member = findMember.get();
+            if (checkSameEmailDifferentProvider(member, oAuth2Attribute)) {
+                throw new CustomAuthenticationException("이미 존재하는 회원입니다, " + member.getProvider().getKoreanName() + "로 다시 로그인해주세요");
+            }
         }
 
         Optional<MemberProfile> findMemberProfile = memberProfileRepository.findByMemberId(member.getId());
@@ -60,5 +63,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         memberAttribute.put("id", member.getId());
 
         return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(member.getRole().name())), memberAttribute, oAuth2Attribute.getAttributeKey());
+    }
+
+    boolean checkSameEmailDifferentProvider(Member member, OAuth2Attribute oAuth2Attribute) {
+        return member.getEmail().equals(oAuth2Attribute.getEmail()) && member.getProvider().name().equals(oAuth2Attribute.getProvider());
     }
 }

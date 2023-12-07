@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ErrorResponse {
+public class ErrorResponseDTO {
 
     private String message;
     private int status;
@@ -21,14 +21,14 @@ public class ErrorResponse {
     private String code;
 
 
-    private ErrorResponse(final ErrorCode code, final List<FieldError> errors) {
+    private ErrorResponseDTO(final ErrorCode code, final List<FieldError> errors) {
         this.message = code.getMessage();
         this.status = code.getStatus();
         this.errors = errors;
         this.code = code.getCode();
     }
 
-    private ErrorResponse(final ErrorCode code) {
+    private ErrorResponseDTO(final ErrorCode code) {
         this.message = code.getMessage();
         this.status = code.getStatus();
         this.code = code.getCode();
@@ -36,21 +36,21 @@ public class ErrorResponse {
     }
 
 
-    public static ErrorResponse of(final ErrorCode code, final BindingResult bindingResult) {
-        return new ErrorResponse(code, FieldError.of(bindingResult));
+    public static ErrorResponseDTO of(final ErrorCode code, final BindingResult bindingResult) {
+        return new ErrorResponseDTO(code, FieldError.of(bindingResult));
     }
-    public static ErrorResponse of(final ErrorCode code) {
-        return new ErrorResponse(code);
-    }
-
-    public static ErrorResponse of(final ErrorCode code, final List<FieldError> errors) {
-        return new ErrorResponse(code, errors);
+    public static ErrorResponseDTO of(final ErrorCode code) {
+        return new ErrorResponseDTO(code);
     }
 
-    public static ErrorResponse of(MethodArgumentTypeMismatchException e) {
+    public static ErrorResponseDTO of(final ErrorCode code, final List<FieldError> errors) {
+        return new ErrorResponseDTO(code, errors);
+    }
+
+    public static ErrorResponseDTO of(MethodArgumentTypeMismatchException e) {
         final String value = e.getValue() == null ? "" : e.getValue().toString();
-        final List<ErrorResponse.FieldError> errors = ErrorResponse.FieldError.of(e.getName(), value, e.getErrorCode());
-        return new ErrorResponse(ErrorCode.INVALID_TYPE_VALUE, errors);
+        final List<ErrorResponseDTO.FieldError> errors = ErrorResponseDTO.FieldError.of(e.getName(), value, e.getErrorCode());
+        return new ErrorResponseDTO(ErrorCode.INVALID_TYPE_VALUE, errors);
     }
 
     @Getter

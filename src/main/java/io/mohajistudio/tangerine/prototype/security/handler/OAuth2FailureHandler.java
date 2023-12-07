@@ -1,9 +1,15 @@
 package io.mohajistudio.tangerine.prototype.security.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.shaded.gson.JsonObject;
+import io.mohajistudio.tangerine.prototype.exception.CustomAuthenticationException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,13 +17,27 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
+    private final ObjectMapper objectMapper;
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        response.sendError(exception.hashCode(), getExceptionMessage(exception));
+        JsonObject jsonObject = new JsonObject();
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+        jsonObject.addProperty("message", getExceptionMessage(exception));
+
+        response.getWriter().write(jsonObject.toString());
     }
 
     private String getExceptionMessage(AuthenticationException exception) {
@@ -33,8 +53,10 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
             return "계정비활성화";
         } else if (exception instanceof LockedException) {
             return "계정잠김";
+        } else if (exception instanceof CustomAuthenticationException) {
+            return exception.getMessage();
         } else {
-            return "확인된 에러가 없습니다.";
+            return "확인된 에러가 없습니다";
         }
     }
 }

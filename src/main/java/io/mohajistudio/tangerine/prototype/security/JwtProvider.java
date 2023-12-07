@@ -69,12 +69,18 @@ public class JwtProvider {
         return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(new Date(now.getTime() + tokenPeriod)).signWith(signingKey, signatureAlgorithm).compact();
     }
 
-    public Authentication verifyToken(String token) {
+    @Transactional
+    public GeneratedTokenDTO reissueToken(String refreshToken) {
+        SecurityMemberDTO securityMemberDTO = verifyToken(refreshToken);
+
+        return generateTokens(securityMemberDTO.getId(), securityMemberDTO.getEmail(), securityMemberDTO.getProvider().name(), securityMemberDTO.getRole().name());
+    }
+
+    public SecurityMemberDTO verifyToken(String token) {
         try {
             Claims claims = jwtParser.parseClaimsJws(token).getBody();
-            SecurityMemberDTO securityMemberDTO = SecurityMemberDTO.builder().id(Long.valueOf(claims.getId())).email(claims.get("email", String.class)).provider(Provider.fromValue(claims.get("provider", String.class))).role(Role.fromValue(claims.get("role", String.class))).build();
 
-            return new UsernamePasswordAuthenticationToken(securityMemberDTO, null, List.of(new SimpleGrantedAuthority(securityMemberDTO.getRole().name())));
+            return SecurityMemberDTO.builder().id(Long.valueOf(claims.getId())).email(claims.get("email", String.class)).provider(Provider.fromValue(claims.get("provider", String.class))).role(Role.fromValue(claims.get("role", String.class))).build();
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             throw new JwtException("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {

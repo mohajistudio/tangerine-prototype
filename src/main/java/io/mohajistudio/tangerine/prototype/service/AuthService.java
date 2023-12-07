@@ -46,7 +46,7 @@ public class AuthService {
         MemberProfile memberProfile = MemberProfile.createMemberProfileFrom(registerDTO, member);
         memberProfileRepository.save(memberProfile);
 
-        return jwtProvider.generateTokens(securityMemberDTO.getId(), securityMemberDTO.getEmail(), securityMemberDTO.getProvider().name(), securityMemberDTO.getRole().name());
+        return jwtProvider.generateTokens(securityMemberDTO);
     }
 
     public void logout(Long memberId) {

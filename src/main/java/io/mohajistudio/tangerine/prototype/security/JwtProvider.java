@@ -5,22 +5,21 @@ import io.mohajistudio.tangerine.prototype.config.JwtConfig;
 import io.mohajistudio.tangerine.prototype.dto.GeneratedTokenDTO;
 import io.mohajistudio.tangerine.prototype.dto.SecurityMemberDTO;
 import io.mohajistudio.tangerine.prototype.entity.Member;
-import io.mohajistudio.tangerine.prototype.enums.Provider;
-import io.mohajistudio.tangerine.prototype.enums.Role;
+import io.mohajistudio.tangerine.prototype.exception.BusinessException;
 import io.mohajistudio.tangerine.prototype.repository.MemberRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.*;
+
+import static io.mohajistudio.tangerine.prototype.enums.ErrorCode.MEMBER_NOT_FOUND;
+import static io.mohajistudio.tangerine.prototype.enums.ErrorCode.MISMATCH_REFRESH_TOKEN;
 
 @Slf4j
 @Service
@@ -33,6 +32,7 @@ public class JwtProvider {
     private JwtParser jwtParser;
     private static final Long ACCESS_TOKEN_PERIOD = 1000L * 60L * 60L; // 1시간
     private static final Long REFRESH_TOKEN_PERIOD = 1000L * 60L * 60L * 24L * 14L; // 2주
+    private static final short REFRESH_TOKEN_EXPIRATION_THRESHOLD_DAYS = 7;
 
     @PostConstruct
     protected void init() {
@@ -48,6 +48,15 @@ public class JwtProvider {
         String refreshToken = generateToken(id, email, provider, role, REFRESH_TOKEN_PERIOD);
 
         saveRefreshToken(id, refreshToken);
+
+        return GeneratedTokenDTO.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+    }
+
+    public GeneratedTokenDTO generateTokens(SecurityMemberDTO securityMemberDTO) {
+        String accessToken = generateToken(securityMemberDTO, ACCESS_TOKEN_PERIOD);
+        String refreshToken = generateToken(securityMemberDTO, REFRESH_TOKEN_PERIOD);
+
+        saveRefreshToken(securityMemberDTO.getId(), refreshToken);
 
         return GeneratedTokenDTO.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
@@ -69,18 +78,58 @@ public class JwtProvider {
         return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(new Date(now.getTime() + tokenPeriod)).signWith(signingKey, signatureAlgorithm).compact();
     }
 
-    @Transactional
-    public GeneratedTokenDTO reissueToken(String refreshToken) {
-        SecurityMemberDTO securityMemberDTO = verifyToken(refreshToken);
+    private String generateToken(SecurityMemberDTO securityMemberDTO, Long tokenPeriod) {
+        Claims claims = Jwts.claims().setSubject("id");
+        claims.put("role", securityMemberDTO.getRole().name());
+        claims.put("provider", securityMemberDTO.getProvider().name());
+        claims.put("email", securityMemberDTO.getEmail());
+        claims.setId(String.valueOf(securityMemberDTO.getId()));
+        Date now = new Date();
 
-        return generateTokens(securityMemberDTO.getId(), securityMemberDTO.getEmail(), securityMemberDTO.getProvider().name(), securityMemberDTO.getRole().name());
+        return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(new Date(now.getTime() + tokenPeriod)).signWith(signingKey, signatureAlgorithm).compact();
     }
 
-    public SecurityMemberDTO verifyToken(String token) {
-        try {
-            Claims claims = jwtParser.parseClaimsJws(token).getBody();
+    @Transactional
+    public GeneratedTokenDTO reissueToken(String refreshToken) {
+        GeneratedTokenDTO generatedTokenDTO;
+        String reissuedRefreshToken = null;
+        String reissuedAccessToken;
+        Claims claims = verifyToken(refreshToken);
+        SecurityMemberDTO securityMemberDTO = SecurityMemberDTO.fromClaims(claims);
 
-            return SecurityMemberDTO.builder().id(Long.valueOf(claims.getId())).email(claims.get("email", String.class)).provider(Provider.fromValue(claims.get("provider", String.class))).role(Role.fromValue(claims.get("role", String.class))).build();
+        Optional<Member> findMember = memberRepository.findById(securityMemberDTO.getId());
+
+        if(findMember.isEmpty()) {
+            throw new BusinessException(MEMBER_NOT_FOUND);
+        }
+
+        Member member = findMember.get();
+
+        if(!member.getRefreshToken().equals(refreshToken)) {
+            throw new BusinessException(MISMATCH_REFRESH_TOKEN);
+        }
+
+        long remainingTokenExpiration = calculateRemainingTokenExpirationInMilliseconds(claims);
+
+        if (remainingTokenExpiration < REFRESH_TOKEN_EXPIRATION_THRESHOLD_DAYS) {
+            reissuedRefreshToken = generateToken(securityMemberDTO, REFRESH_TOKEN_PERIOD);
+        }
+
+        reissuedAccessToken = generateToken(securityMemberDTO, ACCESS_TOKEN_PERIOD);
+        generatedTokenDTO = GeneratedTokenDTO.builder().accessToken(reissuedAccessToken).refreshToken(reissuedRefreshToken).build();
+
+        return generatedTokenDTO;
+    }
+
+    long calculateRemainingTokenExpirationInMilliseconds(Claims claims) {
+        long tokenExpiration = claims.getExpiration().getTime();
+        long nowDateToMilliseconds = new Date().getTime();
+        return ((long) Math.floor(tokenExpiration - nowDateToMilliseconds) / 1000L / 60L / 60L / 24L);
+    }
+
+    public Claims verifyToken(String token) {
+        try {
+            return jwtParser.parseClaimsJws(token).getBody();
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             throw new JwtException("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {

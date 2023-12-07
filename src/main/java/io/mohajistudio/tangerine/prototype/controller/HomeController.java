@@ -30,6 +30,4 @@ public class HomeController {
     public String getSecuredHome() {
         return "Here is secured home";
     }
-
-
 }

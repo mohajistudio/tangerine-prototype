@@ -13,6 +13,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m left join fetch m.memberProfile where m.email = :email")
     Optional<Member> findByEmail(@Param("email") String email);
 
+    @SuppressWarnings("NullableProblems")
     @Override
     @Query("select m from Member m left join fetch m.memberProfile where m.id = :id")
     Optional<Member> findById(@Param("id") Long id);

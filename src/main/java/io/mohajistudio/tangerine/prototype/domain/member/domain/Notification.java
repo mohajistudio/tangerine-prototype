@@ -2,6 +2,7 @@ package io.mohajistudio.tangerine.prototype.domain.member.domain;
 
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "notification")
 public class Notification extends BaseEntity {
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 }

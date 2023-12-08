@@ -1,5 +1,6 @@
 package io.mohajistudio.tangerine.prototype.domain.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.mohajistudio.tangerine.prototype.domain.post.domain.*;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import io.mohajistudio.tangerine.prototype.global.enums.Provider;
@@ -32,28 +33,36 @@ public class Member extends BaseEntity {
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private MemberProfile memberProfile;
 
-    @OneToMany(mappedBy = "member")
-    private List<Notification> notifications = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Notification> notifications;
 
-    @OneToMany(mappedBy = "member")
-    private List<Post> posts = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Post> posts;
 
-    @OneToMany(mappedBy = "member")
-    private List<Comment> comments = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
-    @OneToMany(mappedBy = "member")
-    private List<FavoriteComment> favoriteComments = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<FavoriteComment> favoriteComments;
 
-    @OneToMany(mappedBy = "member")
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Follow> follows;
 
-    @OneToMany(mappedBy = "followMember")
+    @JsonIgnore
+    @OneToMany(mappedBy = "followMember", fetch = FetchType.LAZY)
     private List<Follow> followMembers;
 
-    @OneToMany(mappedBy = "member")
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<ScrapPost> scrapPosts;
 
-    @OneToMany(mappedBy = "member")
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<FavoritePost> favoritePosts;
 
     public static Member createMember(Provider provider, String email) {

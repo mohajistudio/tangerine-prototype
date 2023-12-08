@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class ModifyTokenRequest {
+public class TokenModifyRequest {
     @NotNull
     @NotBlank
     private String refreshToken;

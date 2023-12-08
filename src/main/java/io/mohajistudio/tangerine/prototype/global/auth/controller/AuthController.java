@@ -1,7 +1,7 @@
 package io.mohajistudio.tangerine.prototype.global.auth.controller;
 
 import io.mohajistudio.tangerine.prototype.global.auth.dto.GeneratedToken;
-import io.mohajistudio.tangerine.prototype.global.auth.dto.ModifyTokenRequest;
+import io.mohajistudio.tangerine.prototype.global.auth.dto.TokenModifyRequest;
 import io.mohajistudio.tangerine.prototype.global.auth.dto.RegisterRequest;
 import io.mohajistudio.tangerine.prototype.global.auth.domain.SecurityMember;
 import io.mohajistudio.tangerine.prototype.global.auth.service.AuthService;
@@ -33,7 +33,7 @@ class AuthController {
     }
 
     @PatchMapping("/token")
-    public GeneratedToken modifyTokens(@Valid @RequestBody ModifyTokenRequest modifyTokenRequest) {
-        return jwtProvider.reissueToken(modifyTokenRequest.getRefreshToken());
+    public GeneratedToken tokenModify(@Valid @RequestBody TokenModifyRequest tokenModifyRequest) {
+        return jwtProvider.reissueToken(tokenModifyRequest.getRefreshToken());
     }
 }

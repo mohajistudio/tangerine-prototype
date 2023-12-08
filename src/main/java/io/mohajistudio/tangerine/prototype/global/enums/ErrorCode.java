@@ -12,6 +12,7 @@ public enum ErrorCode {
     INVALID_TYPE_VALUE(400, "C005", "유효하지 않은 형식의 값입니다"),
     HANDLE_ACCESS_DENIED(403, "C006", "접근 권한이 없습니다"),
     NOT_FOUND(404, "C007", "요청한 주소의 API를 찾을 수 없습니다"),
+    MISSING_PARAMETER(400, "C008", "필수 값인 매개변수를 찾을 수 없습니다"),
 
     // Member
     MEMBER_NOT_FOUND(404, "M001", "존재하지 않는 회원입니다"),

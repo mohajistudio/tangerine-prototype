@@ -25,7 +25,7 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private int favoriteCnt = 0;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @ManyToOne

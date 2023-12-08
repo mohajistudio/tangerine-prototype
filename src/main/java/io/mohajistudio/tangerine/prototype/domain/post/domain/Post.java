@@ -30,7 +30,7 @@ public class Post extends BaseEntity {
 
     private short blockCnt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @OneToOne(mappedBy = "post")

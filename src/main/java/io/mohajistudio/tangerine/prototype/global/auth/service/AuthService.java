@@ -1,0 +1,54 @@
+package io.mohajistudio.tangerine.prototype.global.auth.service;
+
+import io.mohajistudio.tangerine.prototype.global.auth.dto.GeneratedToken;
+import io.mohajistudio.tangerine.prototype.global.auth.dto.RegisterRequest;
+import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
+import io.mohajistudio.tangerine.prototype.domain.member.domain.MemberProfile;
+import io.mohajistudio.tangerine.prototype.global.auth.domain.SecurityMember;
+import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
+import io.mohajistudio.tangerine.prototype.global.enums.Role;
+import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
+import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberProfileRepository;
+import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberRepository;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+@Slf4j
+@AllArgsConstructor
+public class AuthService {
+    private final MemberRepository memberRepository;
+    private final MemberProfileRepository memberProfileRepository;
+    private final JwtProvider jwtProvider;
+
+    @Transactional
+    public GeneratedToken register(SecurityMember securityMemberDTO, RegisterRequest registerDTO) {
+        Optional<Member> findMember = memberRepository.findById(securityMemberDTO.getId());
+
+        if (findMember.isEmpty()) {
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        Member member = findMember.get();
+        Optional<MemberProfile> findMemberProfile = memberProfileRepository.findByMemberId(member.getId());
+
+        if (findMemberProfile.isPresent()) {
+            throw new BusinessException(ErrorCode.MEMBER_PROFILE_DUPLICATION);
+        }
+
+        memberRepository.updateRole(member.getId(), Role.MEMBER);
+
+        MemberProfile memberProfile = MemberProfile.createMemberProfileFrom(registerDTO, member);
+        memberProfileRepository.save(memberProfile);
+
+        return jwtProvider.generateTokens(securityMemberDTO);
+    }
+
+    public void logout(Long memberId) {
+        memberRepository.updateRefreshToken(memberId, null);
+    }
+}

@@ -3,6 +3,8 @@ package io.mohajistudio.tangerine.prototype.global.error;
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -63,7 +65,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     protected ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         log.error("handleMissingServletRequestParameterException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.MISSING_PARAMETER, "매개변수를 찾을 수 없습니다: " + e.getParameterName());
+
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.MISSING_PARAMETER, e.getParameterName());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -86,5 +89,12 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
         final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_FOUND);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    protected ResponseEntity<ErrorResponse> handleInvalidDataAccessApiUsageException(DataIntegrityViolationException e) {
+        log.error("handleInvalidDataAccessApiUsageException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.DATA_INTEGRITY_VIOLATION);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

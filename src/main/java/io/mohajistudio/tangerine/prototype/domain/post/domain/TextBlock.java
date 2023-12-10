@@ -1,14 +1,19 @@
 package io.mohajistudio.tangerine.prototype.domain.post.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Builder
 @Entity
 @AllArgsConstructor
@@ -19,9 +24,15 @@ public class TextBlock extends BaseEntity {
     @Column(nullable = false)
     private short orderNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
+    @NotBlank
     private String content;
 
+    @JsonIgnore
     @ManyToOne
     private Post post;
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
 }

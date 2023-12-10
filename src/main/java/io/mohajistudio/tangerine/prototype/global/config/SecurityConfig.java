@@ -41,6 +41,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.GET, "/", "/members/*").permitAll();
                     auth.requestMatchers(HttpMethod.PATCH, "/token").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
+                    auth.requestMatchers(HttpMethod.POST, "/post").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.requestMatchers("/logout", "/secured/home").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.anyRequest().authenticated();
                 }).csrf(AbstractHttpConfigurer::disable).sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

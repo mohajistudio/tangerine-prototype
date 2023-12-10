@@ -1,15 +1,18 @@
 package io.mohajistudio.tangerine.prototype.domain.post.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
 @Builder
 @Entity
 @AllArgsConstructor
@@ -28,31 +31,44 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private int favoriteCnt = 0;
 
-    private short blockCnt;
+    private short blockCnt = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToOne(mappedBy = "post")
-    private TrendingPost trendingPost;
+//    @OneToOne(mappedBy = "post", fetch = FetchType.LAZY)
+//    private TrendingPost trendingPost;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "post")
     private List<ScrapPost> scrapPosts;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "post")
     private List<FavoritePost> favoritePosts;
 
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<TextBlock> textBlocks;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<PlaceBlock> placeBlocks;
 
-    public static Post createPost(String title, LocalDate visitedAt) {
-        //if(blockCnt == 0) throw Exception();
-        return Post.builder().title(title).visitedAt(visitedAt).build();
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public void setPlaceBlocks(List<PlaceBlock> placeBlocks) {
+        this.placeBlocks = placeBlocks;
+        blockCnt += (short) placeBlocks.size();
+        placeBlocks.forEach(placeBlock -> placeBlock.setPost(this));
+    }
+
+    public void setTextBlocks(List<TextBlock> textBlocks) {
+        this.textBlocks = textBlocks;
+        blockCnt += (short) textBlocks.size();
+        textBlocks.forEach(textBlock -> textBlock.setPost(this));
     }
 }

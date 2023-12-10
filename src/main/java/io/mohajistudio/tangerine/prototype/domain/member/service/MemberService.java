@@ -1,4 +1,4 @@
-package io.mohajistudio.tangerine.prototype.domain.member.controller.service;
+package io.mohajistudio.tangerine.prototype.domain.member.service;
 
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.MemberProfile;

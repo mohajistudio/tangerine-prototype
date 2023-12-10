@@ -21,15 +21,15 @@ class AuthController {
     @PostMapping("/register")
     public GeneratedToken register(@Valid @RequestBody RegisterRequest registerDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityMember securityMemberDTO = (SecurityMember) authentication.getPrincipal();
-        return authService.register(securityMemberDTO, registerDTO);
+        SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
+        return authService.register(securityMember, registerDTO);
     }
 
     @PatchMapping("/logout")
     public void logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityMember securityMemberDTO = (SecurityMember) authentication.getPrincipal();
-        authService.logout(securityMemberDTO.getId());
+        SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
+        authService.logout(securityMember.getId());
     }
 
     @PatchMapping("/token")

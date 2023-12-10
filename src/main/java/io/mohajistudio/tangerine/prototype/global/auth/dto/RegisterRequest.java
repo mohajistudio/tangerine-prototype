@@ -26,8 +26,6 @@ public class RegisterRequest {
     @Size(max = 10)
     public String nickname;
 
-    @NotNull
-    @NotBlank
     @Size(max = 255)
     public String thumbnail;
 }

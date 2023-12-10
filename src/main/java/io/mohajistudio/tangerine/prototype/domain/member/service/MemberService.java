@@ -25,6 +25,4 @@ public class MemberService {
 
         return new MemberProfileResponse(findMemberProfile.get());
     }
-
-    
 }

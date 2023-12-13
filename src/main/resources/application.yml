@@ -14,4 +14,3 @@ spring:
     defer-datasource-initialization: true
   profiles:
     include: secret
-

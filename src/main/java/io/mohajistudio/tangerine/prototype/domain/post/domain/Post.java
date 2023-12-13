@@ -40,20 +40,21 @@ public class Post extends BaseEntity {
 //    private TrendingPost trendingPost;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<ScrapPost> scrapPosts;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<FavoritePost> favoritePosts;
 
-    @OneToMany(mappedBy = "post")
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<TextBlock> textBlocks;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<PlaceBlock> placeBlocks;
 
     public void setMember(Member member) {

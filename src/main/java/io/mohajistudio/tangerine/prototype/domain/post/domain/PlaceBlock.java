@@ -33,7 +33,7 @@ public class PlaceBlock extends BaseEntity {
     private short rating;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)

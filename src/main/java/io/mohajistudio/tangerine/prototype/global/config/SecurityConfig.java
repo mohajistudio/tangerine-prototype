@@ -18,9 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -38,12 +35,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*", "/posts").permitAll();
                     auth.requestMatchers(HttpMethod.PATCH, "/token").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
-                    auth.requestMatchers(HttpMethod.POST, "/post").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.POST, "/posts").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.requestMatchers("/logout", "/secured/home").hasAnyAuthority(AUTHORITY_MEMBER);
-                    auth.anyRequest().authenticated();
                 }).csrf(AbstractHttpConfigurer::disable).sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth2Login -> {
                     oauth2Login.successHandler(oAuth2SuccessHandler);

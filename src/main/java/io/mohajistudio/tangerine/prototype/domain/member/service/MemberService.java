@@ -1,10 +1,9 @@
 package io.mohajistudio.tangerine.prototype.domain.member.service;
 
-import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.MemberProfile;
-import io.mohajistudio.tangerine.prototype.domain.member.dto.MemberProfileResponse;
+import io.mohajistudio.tangerine.prototype.domain.member.dto.MemberProfileDTO;
+import io.mohajistudio.tangerine.prototype.domain.member.mapper.MemberMapper;
 import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberProfileRepository;
-import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberRepository;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,12 +16,14 @@ import static io.mohajistudio.tangerine.prototype.global.enums.ErrorCode.MEMBER_
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberProfileRepository memberProfileRepository;
-    public MemberProfileResponse findMemberProfile(Long memberId) {
+    private final MemberMapper memberMapper;
+
+    public MemberProfileDTO findMemberProfile(Long memberId) {
         Optional<MemberProfile> findMemberProfile = memberProfileRepository.findByMemberId(memberId);
-        if(findMemberProfile.isEmpty()) {
+        if (findMemberProfile.isEmpty()) {
             throw new BusinessException(MEMBER_NOT_FOUND);
         }
 
-        return new MemberProfileResponse(findMemberProfile.get());
+        return memberMapper.toDTO(findMemberProfile.get());
     }
 }

@@ -20,7 +20,6 @@ public class ErrorResponse {
     private List<FieldError> errors;
     private String code;
 
-
     private ErrorResponse(final ErrorCode code, final List<FieldError> errors) {
         this.message = code.getMessage();
         this.status = code.getStatus();
@@ -93,6 +92,4 @@ public class ErrorResponse {
                     .collect(Collectors.toList());
         }
     }
-
-
 }

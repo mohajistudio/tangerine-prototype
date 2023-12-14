@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -60,6 +61,13 @@ public class GlobalExceptionHandler {
         log.error("handleHttpRequestMethodNotSupportedException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.error("handleHttpRequestMethodNotSupportedException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.HTTP_MESSAGE_NOT_READABLE_EXCEPTION);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)

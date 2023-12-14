@@ -32,7 +32,7 @@ class AuthController {
         authService.logout(securityMember.getId());
     }
 
-    @PatchMapping("/token")
+    @PatchMapping("/tokens")
     public GeneratedToken tokenModify(@Valid @RequestBody TokenModifyRequest tokenModifyRequest) {
         return jwtProvider.reissueToken(tokenModifyRequest.getRefreshToken());
     }

@@ -4,7 +4,6 @@ import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -95,7 +94,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoResourceFoundException.class)
     protected ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_FOUND);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.URL_NOT_FOUND);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 

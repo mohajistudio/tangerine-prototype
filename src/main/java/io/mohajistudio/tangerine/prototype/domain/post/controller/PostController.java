@@ -39,4 +39,13 @@ public class PostController {
         Page<Post> postListWithPagination = postService.findPostListWithPagination(pageable);
         return postListWithPagination.map(postMapper::toCompactDTO);
     }
+
+    @PatchMapping("/{id}/favorites")
+    public void favoritePostModify(@PathVariable("id") Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
+
+        postService.modifyFavoritePost(id, securityMember.getId());
+
+    }
 }

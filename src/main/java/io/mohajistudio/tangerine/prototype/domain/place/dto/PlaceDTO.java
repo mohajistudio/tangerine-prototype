@@ -19,4 +19,16 @@ public class PlaceDTO {
     private Point coordinates;
     @NotNull
     private String description;
+
+    @Getter
+    @Setter
+    public static class Add extends PlaceDTO {
+    }
+
+    @Getter
+    @Setter
+    public static class Details extends PlaceDTO {
+        @NotNull
+        private Long id;
+    }
 }

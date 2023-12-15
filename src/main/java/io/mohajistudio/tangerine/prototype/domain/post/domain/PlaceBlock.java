@@ -7,15 +7,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Getter
-@Builder
+@SuperBuilder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,30 +30,21 @@ public class PlaceBlock extends BaseEntity {
     @Column(nullable = false)
     private short rating;
 
+    @Setter
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @Setter
+    @ManyToOne(optional = false)
     private Place place;
 
+    @Setter
     @ManyToOne(optional = false)
     private Category category;
 
     @OneToMany(mappedBy = "placeBlock", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<PlaceBlockImage> placeBlockImages;
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
 
     public void setPlaceBlockImages(List<PlaceBlockImage> placeBlockImages) {
         this.placeBlockImages = placeBlockImages;

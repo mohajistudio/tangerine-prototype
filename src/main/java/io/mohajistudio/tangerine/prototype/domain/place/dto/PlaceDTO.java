@@ -2,10 +2,13 @@ package io.mohajistudio.tangerine.prototype.domain.place.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.geo.Point;
 
 @Getter
-public class PlaceAddRequest {
+@Setter
+public class PlaceDTO {
+
     @NotNull
     private String name;
     @NotNull

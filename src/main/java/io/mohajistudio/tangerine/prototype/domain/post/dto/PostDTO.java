@@ -1,29 +1,45 @@
 package io.mohajistudio.tangerine.prototype.domain.post.dto;
 
 import io.mohajistudio.tangerine.prototype.domain.member.dto.MemberDTO;
-import io.mohajistudio.tangerine.prototype.domain.member.mapper.MemberMapper;
-import io.mohajistudio.tangerine.prototype.domain.post.domain.Post;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import org.mapstruct.factory.Mappers;
+import lombok.Setter;
 
 import java.time.LocalDate;
-
+import java.util.List;
 
 @Getter
-@Builder
-@AllArgsConstructor
+@Setter
 public class PostDTO {
+    @NotNull
     private String title;
-
+    @NotNull
     private LocalDate visitedAt;
 
-    private int commentCnt;
+    @Getter
+    @Setter
+    public static class Details extends PostDTO.Compact {
+        private Long id;
+        private List<TextBlockDTO.Details> textBlocks;
+        private List<PlaceBlockDTO.Details> placeBlocks;
+    }
 
-    private int favoriteCnt;
+    @Getter
+    @Setter
+    public static class Add extends PostDTO{
+        @Valid
+        private List<TextBlockDTO.Add> textBlocks;
+        @Valid
+        private List<PlaceBlockDTO.Add> placeBlocks;
+    }
 
-    private short blockCnt;
-
-    private MemberDTO member;
+    @Getter
+    @Setter
+    public static class Compact extends PostDTO {
+        private int commentCnt;
+        private int favoriteCnt;
+        private short blockCnt;
+        private MemberDTO member;
+    }
 }

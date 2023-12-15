@@ -4,19 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-@Builder
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 @Table(name = "post")
 public class Post extends BaseEntity {
     @Column(nullable = false)
@@ -33,6 +31,7 @@ public class Post extends BaseEntity {
 
     private short blockCnt = 0;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
@@ -56,10 +55,6 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<PlaceBlock> placeBlocks;
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
 
     public void setPlaceBlocks(List<PlaceBlock> placeBlocks) {
         this.placeBlocks = placeBlocks;

@@ -6,10 +6,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Builder
+@SuperBuilder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +26,7 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private int favoriteCnt = 0;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @ManyToOne

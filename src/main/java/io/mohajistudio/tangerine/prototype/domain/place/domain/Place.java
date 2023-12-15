@@ -1,5 +1,6 @@
 package io.mohajistudio.tangerine.prototype.domain.place.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.mohajistudio.tangerine.prototype.domain.post.domain.PlaceBlock;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import jakarta.persistence.Column;
@@ -8,12 +9,15 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.geo.Point;
 
-import java.awt.*;
 import java.util.List;
 
-@Builder
+@Getter
+@SuperBuilder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,6 +33,7 @@ public class Place extends BaseEntity {
     @Column(length = 500)
     private String description;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "place")
     private List<PlaceBlock> placeBlocks;
 }

@@ -26,8 +26,8 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public GeneratedToken register(SecurityMember securityMemberDTO, RegisterRequest registerDTO) {
-        Optional<Member> findMember = memberRepository.findById(securityMemberDTO.getId());
+    public GeneratedToken register(SecurityMember securityMember, RegisterRequest registerDTO) {
+        Optional<Member> findMember = memberRepository.findById(securityMember.getId());
 
         if (findMember.isEmpty()) {
             throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
@@ -45,7 +45,9 @@ public class AuthService {
         MemberProfile memberProfile = MemberProfile.createMemberProfileFrom(registerDTO, member);
         memberProfileRepository.save(memberProfile);
 
-        return jwtProvider.generateTokens(securityMemberDTO);
+        securityMember.setRole(Role.MEMBER);
+
+        return jwtProvider.generateTokens(securityMember);
     }
 
     public void logout(Long memberId) {

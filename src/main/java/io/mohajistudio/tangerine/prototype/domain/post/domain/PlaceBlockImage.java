@@ -1,13 +1,14 @@
 package io.mohajistudio.tangerine.prototype.domain.post.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import io.mohajistudio.tangerine.prototype.global.enums.ImageMimeType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@Getter
+@SuperBuilder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +21,15 @@ public class PlaceBlockImage extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ImageMimeType imageMimeType;
 
+    @Column(nullable = false)
+    private short orderNumber;
+
+    @Setter
+    @JsonIgnore
     @ManyToOne
     private PlaceBlock placeBlock;
+
+    public void setImageMimeType(String imageMimeType) {
+        this.imageMimeType = ImageMimeType.fromValue(imageMimeType);
+    }
 }

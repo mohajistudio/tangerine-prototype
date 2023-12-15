@@ -18,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -28,14 +29,17 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint userAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtProvider jwtProvider;
+    private static final String[] AUTHORITY_MEMBER = {"MEMBER", "MANAGER", "ADMIN"};
+    private static final String AUTHORITY_GUEST = "GUEST";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "/login/**", "/error", "/token").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority("GUEST");
-                    auth.requestMatchers(HttpMethod.GET, "/secured/home").hasAuthority("MEMBER");
-                    auth.anyRequest().authenticated();
+                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*", "/posts").permitAll();
+                    auth.requestMatchers(HttpMethod.PATCH, "/tokens").permitAll();
+                    auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
+                    auth.requestMatchers(HttpMethod.POST, "/posts", "/places").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers("/logout", "/secured/home").hasAnyAuthority(AUTHORITY_MEMBER);
                 }).csrf(AbstractHttpConfigurer::disable).sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth2Login -> {
                     oauth2Login.successHandler(oAuth2SuccessHandler);

@@ -3,10 +3,14 @@ package io.mohajistudio.tangerine.prototype.global.error;
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -19,9 +23,9 @@ import java.net.BindException;
 public class GlobalExceptionHandler {
 
     /**
-     *  javax.validation.Valid or @Validated 으로 binding error 발생시 발생한다.
-     *  HttpMessageConverter 에서 등록한 HttpMessageConverter binding 못할경우 발생
-     *  주로 @RequestBody, @RequestPart 어노테이션에서 발생
+     * javax.validation.Valid or @Validated 으로 binding error 발생시 발생한다.
+     * HttpMessageConverter 에서 등록한 HttpMessageConverter binding 못할경우 발생
+     * 주로 @RequestBody, @RequestPart 어노테이션에서 발생
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
@@ -59,6 +63,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.error("handleHttpRequestMethodNotSupportedException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.HTTP_MESSAGE_NOT_READABLE_EXCEPTION);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    protected ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        log.error("handleMissingServletRequestParameterException", e);
+
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.MISSING_PARAMETER, e.getParameterName());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
         log.error("handleEntityNotFoundException", e);
@@ -78,5 +97,12 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
         final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_FOUND);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    protected ResponseEntity<ErrorResponse> handleInvalidDataAccessApiUsageException(DataIntegrityViolationException e) {
+        log.error("handleInvalidDataAccessApiUsageException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.DATA_INTEGRITY_VIOLATION);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

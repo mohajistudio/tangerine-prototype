@@ -1,15 +1,18 @@
 package io.mohajistudio.tangerine.prototype.domain.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.mohajistudio.tangerine.prototype.global.auth.dto.RegisterRequest;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Builder
+@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +28,7 @@ public class MemberProfile extends BaseEntity {
     @Column(length = 20)
     private String nickname;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     Member member;
 

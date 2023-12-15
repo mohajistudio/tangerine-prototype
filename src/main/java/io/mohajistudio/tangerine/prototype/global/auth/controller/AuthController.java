@@ -1,7 +1,7 @@
 package io.mohajistudio.tangerine.prototype.global.auth.controller;
 
 import io.mohajistudio.tangerine.prototype.global.auth.dto.GeneratedToken;
-import io.mohajistudio.tangerine.prototype.global.auth.dto.ModifyTokenRequest;
+import io.mohajistudio.tangerine.prototype.global.auth.dto.TokenModifyRequest;
 import io.mohajistudio.tangerine.prototype.global.auth.dto.RegisterRequest;
 import io.mohajistudio.tangerine.prototype.global.auth.domain.SecurityMember;
 import io.mohajistudio.tangerine.prototype.global.auth.service.AuthService;
@@ -21,19 +21,19 @@ class AuthController {
     @PostMapping("/register")
     public GeneratedToken register(@Valid @RequestBody RegisterRequest registerDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityMember securityMemberDTO = (SecurityMember) authentication.getPrincipal();
-        return authService.register(securityMemberDTO, registerDTO);
+        SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
+        return authService.register(securityMember, registerDTO);
     }
 
     @PatchMapping("/logout")
     public void logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityMember securityMemberDTO = (SecurityMember) authentication.getPrincipal();
-        authService.logout(securityMemberDTO.getId());
+        SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
+        authService.logout(securityMember.getId());
     }
 
-    @PatchMapping("/token")
-    public GeneratedToken modifyTokens(@Valid @RequestBody ModifyTokenRequest modifyTokenRequest) {
-        return jwtProvider.reissueToken(modifyTokenRequest.getRefreshToken());
+    @PatchMapping("/tokens")
+    public GeneratedToken tokenModify(@Valid @RequestBody TokenModifyRequest tokenModifyRequest) {
+        return jwtProvider.reissueToken(tokenModifyRequest.getRefreshToken());
     }
 }

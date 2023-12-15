@@ -11,6 +11,13 @@ java {
 	sourceCompatibility = '17'
 }
 
+compileJava {
+	options.compilerArgs += [
+			'--enable-preview',
+			'-Amapstruct.defaultComponentModel=spring'
+	]
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -27,7 +34,10 @@ dependencies {
     testImplementation 'org.projectlombok:lombok:1.18.28'
     compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
@@ -40,8 +50,21 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+compileTestJava {
+	options.compilerArgs += [
+			'--enable-preview',
+			'-Amapstruct.defaultComponentModel=spring'
+	]
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	jvmArgs([
+			'--enable-preview',
+			'-Amapstruct.defaultComponentModel=spring'
+	])
 }

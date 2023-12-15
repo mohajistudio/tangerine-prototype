@@ -1,19 +1,20 @@
 package io.mohajistudio.tangerine.prototype.domain.post.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Builder
+@Getter
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 @Table(name = "post")
 public class Post extends BaseEntity {
     @Column(nullable = false)
@@ -28,31 +29,42 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private int favoriteCnt = 0;
 
-    private short blockCnt;
+    private short blockCnt = 0;
 
-    @ManyToOne
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToOne(mappedBy = "post")
-    private TrendingPost trendingPost;
+//    @OneToOne(mappedBy = "post", fetch = FetchType.LAZY)
+//    private TrendingPost trendingPost;
 
-    @OneToMany(mappedBy = "post")
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<ScrapPost> scrapPosts;
 
-    @OneToMany(mappedBy = "post")
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<FavoritePost> favoritePosts;
 
-    @OneToMany(mappedBy = "post")
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<TextBlock> textBlocks;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<PlaceBlock> placeBlocks;
 
-    public static Post createPost(String title, LocalDate visitedAt) {
-        //if(blockCnt == 0) throw Exception();
-        return Post.builder().title(title).visitedAt(visitedAt).build();
+    public void setPlaceBlocks(List<PlaceBlock> placeBlocks) {
+        this.placeBlocks = placeBlocks;
+        blockCnt += (short) placeBlocks.size();
+        placeBlocks.forEach(placeBlock -> placeBlock.setPost(this));
+    }
+
+    public void setTextBlocks(List<TextBlock> textBlocks) {
+        this.textBlocks = textBlocks;
+        blockCnt += (short) textBlocks.size();
+        textBlocks.forEach(textBlock -> textBlock.setPost(this));
     }
 }

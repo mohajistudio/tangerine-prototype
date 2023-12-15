@@ -3,9 +3,8 @@ package io.mohajistudio.tangerine.prototype.domain.post.service;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberRepository;
 import io.mohajistudio.tangerine.prototype.domain.post.domain.Post;
-import io.mohajistudio.tangerine.prototype.domain.post.dto.PostDTO;
-import io.mohajistudio.tangerine.prototype.domain.post.mapper.PostMapper;
 import io.mohajistudio.tangerine.prototype.domain.post.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,6 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    private final PostMapper postMapper;
 
     public Post addPost (Post post, Long memberId) {
         Optional<Member> findMember = memberRepository.findById(memberId);
@@ -27,8 +25,7 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Page<PostDTO> findPostListWithPagination(Pageable pageable) {
-        Page<Post> findPost = postRepository.findAll(pageable);
-        return findPost.map(postMapper::toDTO);
+    public Page<Post> findPostListWithPagination(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 }

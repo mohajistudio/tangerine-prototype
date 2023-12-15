@@ -1,10 +1,10 @@
-package io.mohajistudio.tangerine.prototype.domain.post.domain;
+package io.mohajistudio.tangerine.prototype.domain.comment.domain;
 
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
+import io.mohajistudio.tangerine.prototype.domain.post.domain.Post;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 

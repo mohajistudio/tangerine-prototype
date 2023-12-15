@@ -4,6 +4,7 @@ import io.mohajistudio.tangerine.prototype.domain.post.domain.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -21,4 +22,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "join fetch p.member m " +
             "join fetch m.memberProfile mp")
     Page<Post> findAll(Pageable pageable);
+
+    @Modifying
+    @Query("update Post p set p.favoriteCnt = :favoriteCnt where p.id = :id")
+    void updateFavoriteCnt(@Param("id") Long id, @Param("favoriteCnt") int favoriteCnt);
 }

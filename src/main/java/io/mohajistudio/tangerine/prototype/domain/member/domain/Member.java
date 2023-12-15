@@ -1,16 +1,19 @@
 package io.mohajistudio.tangerine.prototype.domain.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.mohajistudio.tangerine.prototype.domain.comment.domain.Comment;
+import io.mohajistudio.tangerine.prototype.domain.comment.domain.FavoriteComment;
 import io.mohajistudio.tangerine.prototype.domain.post.domain.*;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import io.mohajistudio.tangerine.prototype.global.enums.Provider;
 import io.mohajistudio.tangerine.prototype.global.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.ArrayList;
+import lombok.experimental.SuperBuilder;
+
 import java.util.List;
 
-@Builder
+@SuperBuilder
 @Getter
 @Entity
 @AllArgsConstructor

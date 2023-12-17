@@ -36,14 +36,14 @@ public class PostService {
 
     public Post findPostDetails(Long id) {
         Optional<Post> findPost = postRepository.findById(id);
-        if(findPost.isEmpty()) throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND);
+        if(findPost.isEmpty()) throw new BusinessException(ErrorCode.URL_NOT_FOUND);
         return findPost.get();
     }
 
     @Transactional
     public void modifyFavoritePost(Long id, Long memberId) {
         Optional<Post> findPost = postRepository.findById(id);
-        if (findPost.isEmpty()) throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND);
+        if (findPost.isEmpty()) throw new BusinessException(ErrorCode.URL_NOT_FOUND);
         Post post = findPost.get();
 
         Optional<FavoritePost> findFavoritePost = favoritePostRepository.findByMemberIdAndPostId(memberId, id);

@@ -43,7 +43,7 @@ public class PlaceBlock extends BaseEntity {
     @ManyToOne(optional = false)
     private Category category;
 
-    @OneToMany(mappedBy = "placeBlock", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "placeBlock", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private List<PlaceBlockImage> placeBlockImages;
 
     public void setPlaceBlockImages(List<PlaceBlockImage> placeBlockImages) {

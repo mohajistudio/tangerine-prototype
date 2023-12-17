@@ -22,7 +22,7 @@ public class PlaceBlockDTO {
     public static class Details extends PlaceBlockDTO {
         private Long id;
         private CategoryDTO.Details category;
-        private List<PlaceBlockImageDTO.Details> placeBlocks;
+        private List<PlaceBlockImageDTO.Details> placeBlockImages;
         private PlaceDTO.Details place;
     }
 

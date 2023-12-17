@@ -22,6 +22,12 @@ public class PostController {
     private final PostService postService;
     private final PostMapper postMapper;
 
+    @GetMapping
+    public Page<PostDTO.Compact> postListByPage(@PageableDefault Pageable pageable) {
+        Page<Post> postListWithPagination = postService.findPostListByPage(pageable);
+        return postListWithPagination.map(postMapper::toCompactDTO);
+    }
+
     @PostMapping
     public PostDTO.Details postAdd(@Valid @RequestBody PostDTO.Add postAddDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -34,11 +40,12 @@ public class PostController {
         return postMapper.toDetailsDTO(addedPost);
     }
 
-    @GetMapping
-    public Page<PostDTO.Compact> postListWithPagination(@PageableDefault Pageable pageable) {
-        Page<Post> postListWithPagination = postService.findPostListWithPagination(pageable);
-        return postListWithPagination.map(postMapper::toCompactDTO);
+    @GetMapping("/{id}")
+    public PostDTO.Details postDetails(@PathVariable("id") Long id) {
+        Post postDetails = postService.findPostDetails(id);
+        return postMapper.toDetailsDTO(postDetails);
     }
+
 
     @PatchMapping("/{id}/favorites")
     public void favoritePostModify(@PathVariable("id") Long id) {
@@ -46,6 +53,5 @@ public class PostController {
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
 
         postService.modifyFavoritePost(id, securityMember.getId());
-
     }
 }

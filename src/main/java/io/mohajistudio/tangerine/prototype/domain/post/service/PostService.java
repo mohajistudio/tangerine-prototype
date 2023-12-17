@@ -30,8 +30,14 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Page<Post> findPostListWithPagination(Pageable pageable) {
+    public Page<Post> findPostListByPage(Pageable pageable) {
         return postRepository.findAll(pageable);
+    }
+
+    public Post findPostDetails(Long id) {
+        Optional<Post> findPost = postRepository.findById(id);
+        if(findPost.isEmpty()) throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND);
+        return findPost.get();
     }
 
     @Transactional

@@ -21,8 +21,11 @@ public class PlaceBlockDTO {
     @Setter
     public static class Details extends PlaceBlockDTO {
         private Long id;
+        @Valid
         private CategoryDTO.Details category;
+        @Valid
         private List<PlaceBlockImageDTO.Details> placeBlockImages;
+        @Valid
         private PlaceDTO.Details place;
     }
 

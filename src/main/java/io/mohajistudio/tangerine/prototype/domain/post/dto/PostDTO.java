@@ -21,13 +21,15 @@ public class PostDTO {
     @Setter
     public static class Details extends PostDTO.Compact {
         private Long id;
+        @Valid
         private List<TextBlockDTO.Details> textBlocks;
+        @Valid
         private List<PlaceBlockDTO.Details> placeBlocks;
     }
 
     @Getter
     @Setter
-    public static class Add extends PostDTO{
+    public static class Add extends PostDTO {
         @Valid
         private List<TextBlockDTO.Add> textBlocks;
         @Valid

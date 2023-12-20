@@ -26,4 +26,7 @@ public class PlaceDTO {
     @Getter
     public static class Add extends PlaceDTO {
     }
+
+
+    
 }

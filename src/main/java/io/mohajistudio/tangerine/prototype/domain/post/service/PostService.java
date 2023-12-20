@@ -27,6 +27,13 @@ public class PostService {
         Optional<Member> findMember = memberRepository.findById(memberId);
         findMember.ifPresent(post::setMember);
 
+        post.getTextBlocks().forEach(textBlock -> textBlock.setPost(post));
+
+        post.getPlaceBlocks().forEach(placeBlock -> {
+            placeBlock.setPost(post);
+            placeBlock.getPlaceBlockImages().forEach(placeBlockImage -> placeBlockImage.setPlaceBlock(placeBlock));
+        });
+
         return postRepository.save(post);
     }
 

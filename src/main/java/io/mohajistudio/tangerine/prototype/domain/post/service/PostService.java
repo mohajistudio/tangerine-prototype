@@ -82,7 +82,7 @@ public class PostService {
             if (findPlaceBlock.isEmpty()) {
                 throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
             }
-            placeBlockRepository.update(findPlaceBlock.get().getId(), placeBlock.getContent(), placeBlock.getOrderNumber(), placeBlock.getRating());
+            placeBlockRepository.update(findPlaceBlock.get().getId(), placeBlock.getContent(), placeBlock.getOrderNumber(), placeBlock.getRating(), placeBlock.getCategory(), placeBlock.getPlace());
         }
     }
 

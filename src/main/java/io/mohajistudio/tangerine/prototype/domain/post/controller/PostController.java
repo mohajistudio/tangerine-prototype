@@ -33,15 +33,13 @@ public class PostController {
     }
 
     @PostMapping
-    public PostDTO.Details postAdd(@Valid @RequestBody PostDTO.Add postAddDTO) {
+    public void postAdd(@Valid @RequestBody PostDTO.Add postAddDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
 
         Post post = postMapper.toEntity(postAddDTO);
 
-        Post addedPost = postService.addPost(post, securityMember.getId());
-
-        return postMapper.toDetailsDTO(addedPost);
+        postService.addPost(post, securityMember.getId());
     }
 
     @GetMapping("/{id}")

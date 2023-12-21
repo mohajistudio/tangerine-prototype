@@ -24,7 +24,7 @@ public class PostService {
     private final PlaceBlockRepository placeBlockRepository;
     private final PlaceBlockImageRepository placeBlockImageRepository;
 
-    public Post addPost(Post post, Long memberId) {
+    public void addPost(Post post, Long memberId) {
         Optional<Member> findMember = memberRepository.findById(memberId);
         findMember.ifPresent(post::setMember);
 
@@ -35,7 +35,7 @@ public class PostService {
             placeBlock.getPlaceBlockImages().forEach(placeBlockImage -> placeBlockImage.setPlaceBlock(placeBlock));
         });
 
-        return postRepository.save(post);
+        postRepository.save(post);
     }
 
     public Page<Post> findPostListByPage(Pageable pageable) {

@@ -22,7 +22,8 @@ public enum ErrorCode {
     MEMBER_PROFILE_DUPLICATION(400, "M002", "이미 존재하는 회원입니다"),
 
     //TOKEN
-    MISMATCH_REFRESH_TOKEN(401, "T001", "유효하지 않은 토큰입니다");
+    MISMATCH_REFRESH_TOKEN(401, "T001", "유효하지 않은 토큰입니다"),
+    NO_PERMISSION(401, "T002", "요청에 대한 권한이 없습니다");
 
     private final String code;
     private final String message;

@@ -13,5 +13,6 @@ import org.mapstruct.Mapping;
 public interface PostMapper {
     PostDTO.Compact toCompactDTO(Post post);
     PostDTO.Details toDetailsDTO(Post post);
+    Post toEntity(PostDTO.Details postDetailsDTO);
     Post toEntity(PostDTO.Add postAddDTO);
 }

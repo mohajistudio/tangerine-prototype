@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ public class PlaceBlockDTO {
         @Valid
         private CategoryDTO.Details category;
         @Valid
-        private List<PlaceBlockImageDTO.Details> placeBlockImages;
+        private Set<PlaceBlockImageDTO.Details> placeBlockImages;
         @Valid
         private PlaceDTO.Details place;
     }
@@ -37,7 +38,7 @@ public class PlaceBlockDTO {
         private CategoryDTO.Add category;
         @Valid
         @NotNull
-        private List<PlaceBlockImageDTO.Add> placeBlockImages;
+        private Set<PlaceBlockImageDTO.Add> placeBlockImages;
         @Valid
         @NotNull
         private PlaceDTO.Add place;

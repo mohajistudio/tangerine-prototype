@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,18 +23,18 @@ public class PostDTO {
     public static class Details extends PostDTO.Compact {
         private Long id;
         @Valid
-        private List<TextBlockDTO.Details> textBlocks;
+        private Set<TextBlockDTO.Details> textBlocks;
         @Valid
-        private List<PlaceBlockDTO.Details> placeBlocks;
+        private Set<PlaceBlockDTO.Details> placeBlocks;
     }
 
     @Getter
     @Setter
     public static class Add extends PostDTO {
         @Valid
-        private List<TextBlockDTO.Add> textBlocks;
+        private Set<TextBlockDTO.Add> textBlocks;
         @Valid
-        private List<PlaceBlockDTO.Add> placeBlocks;
+        private Set<PlaceBlockDTO.Add> placeBlocks;
     }
 
     @Getter

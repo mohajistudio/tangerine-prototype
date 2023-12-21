@@ -11,6 +11,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @SuperBuilder
@@ -44,9 +45,9 @@ public class PlaceBlock extends BaseEntity {
     private Category category;
 
     @OneToMany(mappedBy = "placeBlock", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    private List<PlaceBlockImage> placeBlockImages;
+    private Set<PlaceBlockImage> placeBlockImages;
 
-    public void setPlaceBlockImages(List<PlaceBlockImage> placeBlockImages) {
+    public void setPlaceBlockImages(Set<PlaceBlockImage> placeBlockImages) {
         this.placeBlockImages = placeBlockImages;
         placeBlockImages.forEach(placeBlockImage -> placeBlockImage.setPlaceBlock(this));
     }

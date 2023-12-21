@@ -62,8 +62,10 @@ public class PostService {
             throw new BusinessException(ErrorCode.NO_PERMISSION);
         }
 
-        post.getTextBlocks().forEach(textBlock -> modifyTextBlock(textBlock, post));
-        post.getPlaceBlocks().forEach(placeBlock -> {
+        postRepository.update(post.getId(), modifyPost.getTitle(), modifyPost.getVisitedAt());
+
+        modifyPost.getTextBlocks().forEach(textBlock -> modifyTextBlock(textBlock, post));
+        modifyPost.getPlaceBlocks().forEach(placeBlock -> {
             modifyPlaceBlock(placeBlock, post);
             placeBlock.getPlaceBlockImages().forEach(placeBlockImage ->
                     modifyPlaceBlockImage(placeBlock, placeBlockImage)
@@ -93,7 +95,7 @@ public class PostService {
             if (findPlaceBlockImage.isEmpty()) {
                 throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
             }
-            placeBlockImageRepository.update(findPlaceBlockImage.get().getId(), placeBlockImage.getImageUrl(), placeBlockImage.getImageMimeType().name(), placeBlockImage.getOrderNumber());
+            placeBlockImageRepository.update(findPlaceBlockImage.get().getId(), placeBlockImage.getImageUrl(), placeBlockImage.getImageMimeType(), placeBlockImage.getOrderNumber());
         }
     }
 

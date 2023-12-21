@@ -53,7 +53,7 @@ public class PostController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
 
-        if(!Objects.equals(id, postDetailsDTO.getId())) {
+        if (!Objects.equals(id, postDetailsDTO.getId())) {
             throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
         }
 

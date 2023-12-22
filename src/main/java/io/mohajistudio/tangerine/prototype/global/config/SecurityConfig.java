@@ -35,8 +35,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*", "/posts").permitAll();
-                    auth.requestMatchers(HttpMethod.PATCH, "/tokens").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*", "/posts", "/posts/*").permitAll();
+                    auth.requestMatchers(HttpMethod.PATCH, "/tokens", "/posts/*").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
                     auth.requestMatchers(HttpMethod.POST, "/posts", "/places").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.requestMatchers(HttpMethod.PATCH, "/posts/*/favorites", "/places").hasAnyAuthority(AUTHORITY_MEMBER);

@@ -5,18 +5,18 @@ import io.mohajistudio.tangerine.prototype.domain.member.domain.MemberProfile;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
-@Builder
-@RequiredArgsConstructor
+@Setter
 public class MemberProfileDTO {
-    private final Long id;
-    private final String name;
-    private final String nickname;
-    private final char sex;
-    private final String phone;
-    private final String thumbnail;
-    private final LocalDate birthday;
+    private Long id;
+    private String name;
+    private String nickname;
+    private char sex;
+    private String phone;
+    private String thumbnail;
+    private LocalDate birthday;
 }

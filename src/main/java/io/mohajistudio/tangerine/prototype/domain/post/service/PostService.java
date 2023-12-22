@@ -6,12 +6,15 @@ import io.mohajistudio.tangerine.prototype.domain.post.domain.*;
 import io.mohajistudio.tangerine.prototype.domain.post.repository.*;
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
+import io.mohajistudio.tangerine.prototype.global.error.exception.UrlNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -43,8 +46,8 @@ public class PostService {
     }
 
     public Post findPostDetails(Long id) {
-        Optional<Post> findPost = postRepository.findById(id);
-        if (findPost.isEmpty()) throw new BusinessException(ErrorCode.URL_NOT_FOUND);
+        Optional<Post> findPost = postRepository.findByIdDetails(id);
+        if (findPost.isEmpty()) throw new UrlNotFoundException();
         return findPost.get();
     }
 
@@ -53,7 +56,7 @@ public class PostService {
         Optional<Post> findPost = postRepository.findById(modifyPost.getId());
 
         if (findPost.isEmpty()) {
-            throw new BusinessException(ErrorCode.URL_NOT_FOUND);
+            throw new UrlNotFoundException();
         }
 
         Post post = findPost.get();
@@ -115,7 +118,7 @@ public class PostService {
     @Transactional
     public void modifyFavoritePost(Long id, Long memberId) {
         Optional<Post> findPost = postRepository.findById(id);
-        if (findPost.isEmpty()) throw new BusinessException(ErrorCode.URL_NOT_FOUND);
+        if (findPost.isEmpty()) throw new UrlNotFoundException();
         Post post = findPost.get();
 
         Optional<FavoritePost> findFavoritePost = favoritePostRepository.findByMemberIdAndPostId(memberId, id);
@@ -129,5 +132,30 @@ public class PostService {
             favoritePostRepository.save(favoritePost);
             postRepository.updateFavoriteCnt(post.getId(), post.getFavoriteCnt() + 1);
         }
+    }
+
+    @Transactional
+    public void deletePost(Long id, Long memberId) {
+        Optional<Post> findPost = postRepository.findByIdDetails(id);
+        if (findPost.isEmpty()) throw new UrlNotFoundException();
+        Post post = findPost.get();
+
+        if (!post.getMember().getId().equals(memberId)) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION);
+        }
+
+        LocalDateTime deletedAt = LocalDateTime.now();
+
+        postRepository.delete(id, deletedAt);
+
+        post.getTextBlocks().forEach(textBlock -> {
+            textBlockRepository.delete(textBlock.getId(), deletedAt);
+        });
+        post.getPlaceBlocks().forEach(placeBlock -> {
+            placeBlockRepository.delete(placeBlock.getId(), deletedAt);
+            placeBlock.getPlaceBlockImages().forEach(placeBlockImage ->
+                    placeBlockImageRepository.delete(placeBlockImage.getId(), deletedAt)
+            );
+        });
     }
 }

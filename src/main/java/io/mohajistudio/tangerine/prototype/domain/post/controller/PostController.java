@@ -59,6 +59,13 @@ public class PostController {
 
         postService.modifyPost(securityMember.getId(), postMapper.toEntity(postDetailsDTO));
     }
+    @DeleteMapping("/{id}")
+    public void postDelete(@PathVariable("id") Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
+
+        postService.deletePost(id, securityMember.getId());
+    }
 
     @PatchMapping("/{id}/favorites")
     public void favoritePostModify(@PathVariable("id") Long id) {
@@ -67,4 +74,6 @@ public class PostController {
 
         postService.modifyFavoritePost(id, securityMember.getId());
     }
+
+
 }

@@ -39,7 +39,8 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.PATCH, "/tokens").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
                     auth.requestMatchers(HttpMethod.POST, "/posts", "/places").hasAnyAuthority(AUTHORITY_MEMBER);
-                    auth.requestMatchers(HttpMethod.PATCH, "/posts/*/favorites", "/places").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers("/naver/**").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.GET,"/places/api").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.requestMatchers("/logout", "/secured/home").hasAnyAuthority(AUTHORITY_MEMBER);
                 }).csrf(AbstractHttpConfigurer::disable).sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth2Login -> {

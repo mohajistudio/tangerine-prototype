@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     protected ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.error("handleHttpRequestMethodNotSupportedException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.HTTP_MESSAGE_NOT_READABLE_EXCEPTION);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.HTTP_MESSAGE_NOT_READABLE);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -102,6 +102,13 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleInvalidDataAccessApiUsageException(DataIntegrityViolationException e) {
         log.error("handleInvalidDataAccessApiUsageException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.DATA_INTEGRITY_VIOLATION);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<ErrorResponse> handleInvalidDataAccessApiUsageException(IllegalArgumentException e) {
+        log.error("handleIllegalArgumentException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.ILLEGAL_ARGUMENT);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

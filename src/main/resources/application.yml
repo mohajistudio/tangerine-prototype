@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/tangerine_prototype
-    username: postgres
-    password: password
+    username:
+    password:
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
@@ -14,3 +14,6 @@ spring:
     defer-datasource-initialization: true
   profiles:
     include: secret, region
+  sql:
+    init:
+      mode: always

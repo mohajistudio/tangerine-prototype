@@ -24,8 +24,7 @@ public class PlaceController {
     }
 
     @PostMapping
-    public PlaceDTO.Details placeAdd(@Valid @RequestBody PlaceDTO.Add placeAddRequest) {
-        Place place = placeService.addPlace(placeMapper.placeAddRequestToPlace(placeAddRequest));
-        return placeMapper.placeToPlaceAddResponse(place);
+    public void placeAdd(@Valid @RequestBody PlaceDTO.Add placeAddRequest) {
+        placeService.addPlace(placeMapper.placeAddRequestToPlace(placeAddRequest));
     }
 }

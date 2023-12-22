@@ -14,7 +14,7 @@ public enum ImageMimeType {
 
     public static ImageMimeType fromValue(String value) {
         for (ImageMimeType mimeType : values()) {
-            if (mimeType.value.equalsIgnoreCase(value)) {
+            if (mimeType.value.equalsIgnoreCase(value) || mimeType.name().equals(value)) {
                 return mimeType;
             }
         }

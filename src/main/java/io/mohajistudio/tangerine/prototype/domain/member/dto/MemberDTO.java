@@ -5,12 +5,12 @@ import io.mohajistudio.tangerine.prototype.domain.member.mapper.MemberMapper;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.mapstruct.factory.Mappers;
 
 @Getter
-@Builder
-@RequiredArgsConstructor
+@Setter
 public class MemberDTO {
-    private final Long id;
-    private final MemberProfileDTO memberProfile;
+    private Long id;
+    private MemberProfileDTO memberProfile;
 }

@@ -1,10 +1,13 @@
 package io.mohajistudio.tangerine.prototype.domain.post.dto;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.mohajistudio.tangerine.prototype.global.serializer.PointJsonDeserializer;
+import io.mohajistudio.tangerine.prototype.global.serializer.PointJsonSerializer;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.geo.Point;
+import org.locationtech.jts.geom.Point;
 
 @Getter
 @Setter
@@ -26,4 +29,7 @@ public class PlaceDTO {
     @Getter
     public static class Add extends PlaceDTO {
     }
+
+
+    
 }

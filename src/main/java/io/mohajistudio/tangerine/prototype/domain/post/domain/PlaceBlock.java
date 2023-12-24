@@ -33,7 +33,7 @@ public class PlaceBlock extends BaseEntity {
 
     @Setter
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Post post;
 
     @Setter
@@ -44,7 +44,7 @@ public class PlaceBlock extends BaseEntity {
     @ManyToOne(optional = false)
     private Category category;
 
-    @OneToMany(mappedBy = "placeBlock", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "placeBlock", fetch = FetchType.EAGER)
     private Set<PlaceBlockImage> placeBlockImages;
 
     public void setPlaceBlockImages(Set<PlaceBlockImage> placeBlockImages) {

@@ -25,7 +25,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "left join fetch pb.placeBlockImages pbi " +
             "left join fetch pb.category c " +
             "left join fetch pb.place pl " +
-            "where p.id = :id and p.deletedAt IS NULL")
+            "where p.id = :id " +
+            "and p.deletedAt IS NULL " +
+            "and tb.deletedAt IS NULL " +
+            "and pb.deletedAt IS NULL"
+    )
     Optional<Post> findByIdDetails(@Param("id") Long id);
 
     @Override
@@ -35,15 +39,15 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "where p.deletedAt IS NULL")
     Page<Post> findAll(Pageable pageable);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("update Post p set p.favoriteCnt = :favoriteCnt where p.id = :id and p.deletedAt IS NULL")
     void updateFavoriteCnt(@Param("id") Long id, @Param("favoriteCnt") int favoriteCnt);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("update Post p set p.title = :title, p.visitedAt = :visitedAt where p.id = :id and p.deletedAt IS NULL")
     void update(@Param("id") Long id, @Param("title") String title, @Param("visitedAt") LocalDate visitedAt);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("update Post p set p.deletedAt = :deletedAt where p.id = :id and p.deletedAt IS NULL")
     void delete(@Param("id") Long id, @Param("deletedAt") LocalDateTime deletedAt);
 }

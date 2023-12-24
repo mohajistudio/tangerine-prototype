@@ -5,8 +5,10 @@ import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberReposi
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import io.mohajistudio.tangerine.prototype.domain.post.domain.*;
 import io.mohajistudio.tangerine.prototype.domain.post.repository.*;
+import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import io.mohajistudio.tangerine.prototype.global.enums.ImageMimeType;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,11 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @SpringBootTest
+@Slf4j
 @Transactional
 class PostServiceTest {
     @Autowired
@@ -28,11 +29,6 @@ class PostServiceTest {
     private PostRepository postRepository;
     @Autowired
     private MemberRepository memberRepository;
-    private final Post post;
-
-    PostServiceTest() {
-        this.post = createPost();
-    }
 
     Post createPost() {
         Set<TextBlock> textBlocks = new HashSet<>();
@@ -56,11 +52,46 @@ class PostServiceTest {
         return post;
     }
 
+    Post createModifyPost(Post post) {
+        Set<TextBlock> textBlocks = new HashSet<>();
+        Set<PlaceBlock> placeBlocks = new HashSet<>();
+        Set<PlaceBlockImage> placeBlockImages = new HashSet<>();
+
+        Post modifyPost = Post.builder().title("수정된 테스트 타이틀").visitedAt(LocalDate.of(2023, 12, 25)).id(post.getId()).build();
+        Category category = Category.builder().id(1L).build();
+        Place place = Place.builder().id(1L).build();
+
+        List<Long> textBlockIds = post.getTextBlocks().stream().map(BaseEntity::getId).toList();
+        textBlocks.add(TextBlock.builder().content("세 번째였던 첫 번째 블럭에 들어갈 내용입니다.").orderNumber((short) 1).id(textBlockIds.get(1)).build());
+
+        List<Long> placeBlockIds = new ArrayList<>();
+        List<Long> placeBlockImageIds = new ArrayList<>();
+
+        post.getPlaceBlocks().forEach(placeBlock -> {
+            placeBlockIds.add(placeBlock.getId());
+            placeBlock.getPlaceBlockImages().forEach(placeBlockImage -> placeBlockImageIds.add(placeBlockImage.getId()));
+        });
+
+        placeBlockImages.add(PlaceBlockImage.builder().imageUrl("https://image-url-2-1.com").imageMimeType(ImageMimeType.JPEG).orderNumber((short) 1).id(placeBlockImageIds.get(0)).build());
+        placeBlockImages.add(PlaceBlockImage.builder().imageUrl("https://image-url-2-2.com").imageMimeType(ImageMimeType.PNG).orderNumber((short) 1).id(placeBlockImageIds.get(1)).build());
+
+        Set<PlaceBlockImage> placeBlockImages2 = new HashSet<>();
+        placeBlockImages2.add(PlaceBlockImage.builder().imageUrl("https://image-url-3-1.com").imageMimeType(ImageMimeType.JPEG).orderNumber((short) 1).build());
+        placeBlockImages2.add(PlaceBlockImage.builder().imageUrl("https://image-url-3-2.com").imageMimeType(ImageMimeType.PNG).orderNumber((short) 1).build());
+
+        placeBlocks.add(PlaceBlock.builder().content("수정된 두 번째 블럭에 들어갈 내용입니다.").orderNumber((short) 2).category(category).place(place).placeBlockImages(placeBlockImages).id(placeBlockIds.get(0)).build());
+        placeBlocks.add(PlaceBlock.builder().content("추가된 세 번째 블럭에 들어갈 내용입니다.").orderNumber((short) 3).category(category).place(place).placeBlockImages(placeBlockImages2).build());
+
+        modifyPost.setTextBlocks(textBlocks);
+        modifyPost.setPlaceBlocks(placeBlocks);
+        return modifyPost;
+    }
+
     @Test
     void addPost() {
         Optional<Member> findMember = memberRepository.findById(1L);
-        Assertions.assertTrue(findMember.isPresent());
 
+        Post post = createPost();
 
         postService.addPost(post, findMember.get().getId());
 
@@ -76,7 +107,7 @@ class PostServiceTest {
         Assertions.assertTrue(findMember.isPresent());
 
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("id").ascending());
-        for(int i = 0; i < times; i ++) {
+        for (int i = 0; i < times; i++) {
             postService.addPost(createPost(), findMember.get().getId());
         }
 
@@ -87,10 +118,28 @@ class PostServiceTest {
 
     @Test
     void findPostDetails() {
+
     }
 
     @Test
     void modifyPost() {
+        Optional<Member> findMember = memberRepository.findById(1L);
+        Member member = findMember.get();
+        Post post = createPost();
+        post.setMember(member);
+        postService.addPost(post, member.getId());
+
+        Post modifyPost = createModifyPost(post);
+        postService.modifyPost(modifyPost, member.getId());
+        Assertions.assertEquals(modifyPost.getId(), post.getId());
+
+        Optional<Post> findModifiedPost = postRepository.findByIdDetails(modifyPost.getId());
+        Assertions.assertTrue(findModifiedPost.isPresent());
+
+        Post modifiedPost = findModifiedPost.get();
+        Assertions.assertEquals(1, modifiedPost.getTextBlocks().size());
+        Assertions.assertEquals(2, modifiedPost.getPlaceBlocks().size());
+        modifiedPost.getPlaceBlocks().forEach(placeBlock -> Assertions.assertEquals(2, placeBlock.getPlaceBlockImages().size()));
     }
 
     @Test

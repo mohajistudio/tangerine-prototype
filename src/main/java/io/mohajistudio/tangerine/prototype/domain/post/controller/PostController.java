@@ -57,7 +57,7 @@ public class PostController {
             throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        postService.modifyPost(securityMember.getId(), postMapper.toEntity(postDetailsDTO));
+        postService.modifyPost(postMapper.toEntity(postDetailsDTO), securityMember.getId());
     }
     @DeleteMapping("/{id}")
     public void postDelete(@PathVariable("id") Long id) {

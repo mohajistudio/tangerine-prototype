@@ -44,6 +44,7 @@ public class PostController {
     }
 
     @PostMapping
+    @Operation(summary = "게시글 추가", description = "게시글 형식에 맞게 데이터를 전달해주세요.")
     public void postAdd(@Valid @RequestBody PostDTO.Add postAddDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
@@ -54,12 +55,14 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "게시글 상세 조회", description = "게시글 상세를 조회합니다.")
     public PostDTO.Details postDetails(@PathVariable("id") Long id) {
         Post postDetails = postService.findPostDetails(id);
         return postMapper.toDetailsDTO(postDetails);
     }
 
     @PatchMapping("/{id}")
+    @Operation(summary = "게시글 수정", description = "게시글 형식에 맞게 데이터를 전달해주세요.")
     public void postModify(@PathVariable("id") Long id, @Valid @RequestBody PostDTO.Details postDetailsDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
@@ -72,6 +75,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다.")
     public void postDelete(@PathVariable("id") Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
@@ -80,6 +84,7 @@ public class PostController {
     }
 
     @PatchMapping("/{id}/favorites")
+    @Operation(summary = "좋아하는 게시글 추가/삭제", description = "좋아하는 게시글을 추가 또는 삭제합니다.")
     public void favoritePostModify(@PathVariable("id") Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();

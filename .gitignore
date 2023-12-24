@@ -28,6 +28,8 @@ out/
 application-secret.yml
 /src/main/generated/**
 /src/main/generated
+/src/main/gen
+/src/main/gen/**
 
 ### NetBeans ###
 /nbproject/private/

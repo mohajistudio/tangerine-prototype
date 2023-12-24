@@ -30,7 +30,8 @@ public class JwtProvider {
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     private Key signingKey;
     private JwtParser jwtParser;
-    private static final Long ACCESS_TOKEN_PERIOD = 1000L * 60L * 60L; // 1시간
+//    private static final Long ACCESS_TOKEN_PERIOD = 1000L * 60L * 60L; // 1시간
+    private static final Long ACCESS_TOKEN_PERIOD = 1000L * 60L * 60L * 24L * 14L; // 2주
     private static final Long REFRESH_TOKEN_PERIOD = 1000L * 60L * 60L * 24L * 14L; // 2주
     private static final short REFRESH_TOKEN_EXPIRATION_THRESHOLD_DAYS = 7;
 

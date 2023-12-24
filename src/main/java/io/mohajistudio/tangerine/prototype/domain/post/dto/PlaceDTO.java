@@ -1,9 +1,5 @@
 package io.mohajistudio.tangerine.prototype.domain.post.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.mohajistudio.tangerine.prototype.global.serializer.PointJsonDeserializer;
-import io.mohajistudio.tangerine.prototype.global.serializer.PointJsonSerializer;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;

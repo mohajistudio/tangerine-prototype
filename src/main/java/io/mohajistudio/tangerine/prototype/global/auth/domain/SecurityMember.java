@@ -19,8 +19,4 @@ public class SecurityMember {
     public static SecurityMember fromClaims(Claims claims) {
         return SecurityMember.builder().id(Long.valueOf(claims.getId())).email(claims.get("email", String.class)).provider(Provider.fromValue(claims.get("provider", String.class))).role(Role.fromValue(claims.get("role", String.class))).build();
     }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }

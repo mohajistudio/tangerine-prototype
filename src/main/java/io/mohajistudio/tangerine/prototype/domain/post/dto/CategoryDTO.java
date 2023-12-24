@@ -1,6 +1,5 @@
 package io.mohajistudio.tangerine.prototype.domain.post.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;

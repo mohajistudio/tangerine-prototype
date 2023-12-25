@@ -5,31 +5,36 @@ import io.mohajistudio.tangerine.prototype.domain.post.domain.Post;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+@Getter
 @SuperBuilder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "comment")
 public class Comment extends BaseEntity {
-
     @Column(nullable = false)
     private String content;
 
+    @Setter
     @Column(nullable = false)
     private int groupNumber;
 
     @Column(nullable = false)
     private int favoriteCnt = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Member member;
 
-    @ManyToOne
+    @Setter
+    @ManyToOne(optional = false)
     private Post post;
 
     @ManyToOne
@@ -41,13 +46,9 @@ public class Comment extends BaseEntity {
     @ManyToOne
     private Comment replyComment;
 
-    @OneToMany(mappedBy = "replyComment")
+    @OneToMany(mappedBy = "replyComment", fetch = FetchType.LAZY)
     private List<Comment> repliedComments;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
     private List<FavoriteComment> favoriteComments;
-
-    public static Comment createComment(String content, int groupNumber) {
-        return Comment.builder().content(content).groupNumber(groupNumber).build();
-    }
 }

@@ -91,6 +91,4 @@ public class PostController {
 
         postService.modifyFavoritePost(id, securityMember.getId());
     }
-
-
 }

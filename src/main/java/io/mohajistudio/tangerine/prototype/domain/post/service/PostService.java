@@ -26,7 +26,6 @@ public class PostService {
     private final PlaceBlockRepository placeBlockRepository;
     private final PlaceBlockImageRepository placeBlockImageRepository;
 
-
     @Transactional
     public void addPost(Post post, Long memberId) {
         checkBlockOrderNumber(post.getPlaceBlocks(), post.getTextBlocks());

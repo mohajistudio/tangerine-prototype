@@ -36,7 +36,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*", "/posts", "/posts/*", "/login/kakao").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*", "/posts", "/posts/*", "/login/kakao", "/posts/*/comments").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/swagger", "/swagger-ui/**", "/v3/api-docs/**").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
                     auth.requestMatchers(HttpMethod.PATCH, "/tokens", "/posts/*").permitAll();

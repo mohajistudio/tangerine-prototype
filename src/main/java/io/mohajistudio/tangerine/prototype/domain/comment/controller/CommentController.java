@@ -18,6 +18,14 @@ public class CommentController {
     private final CommentService commentService;
     private final CommentMapper commentMapper;
 
+    @GetMapping
+    public Page<CommentDTO.Details> commentListByPage(@PathVariable(name = "postId") Long postId, @ModelAttribute PageableParam pageableParam) {
+        Pageable pageable = PageRequest.of(pageableParam.getPage(), pageableParam.getSize());
+        Page<Comment> commentListByPage = commentService.findCommentListByPage(postId, pageable);
+
+        return commentListByPage.map(commentMapper::commentAddDtoToComment);
+    }
+
     @PostMapping
     public void commentAdd(@RequestBody @Valid CommentDTO.Add commentAddDTO, @PathVariable(name = "postId") Long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

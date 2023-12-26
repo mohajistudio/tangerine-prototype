@@ -10,7 +10,10 @@ import io.mohajistudio.tangerine.prototype.domain.post.repository.PostRepository
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import io.mohajistudio.tangerine.prototype.global.error.exception.UrlNotFoundException;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,6 +26,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     public void AddComment(Comment comment, Long postId, Long memberId) {
+
         Optional<Member> findMember = memberRepository.findById(memberId);
         findMember.ifPresent(comment::setMember);
 
@@ -45,8 +49,23 @@ public class CommentService {
                 throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
             }
             comment.setGroupNumber(parentGroupNumber);
+        } else {
+            throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
         commentRepository.save(comment);
+    }
+
+    public Page<Comment> findCommentListByPage(Long postId, Pageable pageable) {
+        Optional<Post> findPost = postRepository.findById(postId);
+        if (findPost.isEmpty()) {
+            throw new UrlNotFoundException();
+        }
+
+        return commentRepository.findByPostId(postId, pageable);
+    }
+
+    public void patchComment(Comment comment, Long postId, Long memberId) {
+
     }
 }

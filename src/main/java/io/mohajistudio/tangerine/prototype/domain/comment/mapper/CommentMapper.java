@@ -6,5 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface CommentMapper {
-    Comment commentAddDtoToComment(CommentDTO.Add commentDTO);
+    Comment commentAddDtoToComment(CommentDTO.Add commentAddDTO);
+    CommentDTO.Details commentAddDtoToComment(Comment comment);
+    Comment commentAddDtoToComment(CommentDTO.Patch commentPatchDTO);
 }

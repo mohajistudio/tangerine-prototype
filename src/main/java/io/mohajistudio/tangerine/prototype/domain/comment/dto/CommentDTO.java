@@ -5,13 +5,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class CommentDTO {
     @NotNull
     private String content;
-    private CommentDTO.Compact parentComment;
-    private CommentDTO.Compact replyComment;
+
 
     @Getter
     @Setter
@@ -22,15 +23,24 @@ public class CommentDTO {
     @Getter
     @Setter
     public static class Add extends CommentDTO {
-
+        private CommentDTO.Compact parentComment;
+        private CommentDTO.Compact replyComment;
     }
 
     @Getter
     @Setter
-    public static class Details extends CommentDTO {
+    public static class Details extends CommentDTO.Add {
+        private Long id;
         private int groupNumber;
         private int favoriteCnt;
+        private LocalDateTime createdAt;
+        private LocalDateTime modifiedAt;
         private MemberDTO member;
-        private PostDTO post;
+    }
+
+    @Getter
+    @Setter
+    public static class Patch extends CommentDTO {
+        private Long id;
     }
 }

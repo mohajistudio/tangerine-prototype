@@ -1,6 +1,7 @@
 package io.mohajistudio.tangerine.prototype.infra.region.dto;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 

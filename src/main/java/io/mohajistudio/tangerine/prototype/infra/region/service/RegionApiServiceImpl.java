@@ -2,6 +2,7 @@ package io.mohajistudio.tangerine.prototype.infra.region.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mohajistudio.tangerine.prototype.domain.place.controller.RegionApiService;
+import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import io.mohajistudio.tangerine.prototype.global.error.exception.CustomAuthenticationException;
 import io.mohajistudio.tangerine.prototype.infra.region.config.RegionApiProperties;
@@ -29,10 +30,10 @@ public class RegionApiServiceImpl implements RegionApiService {
     private final RegionApiProperties regionApiConfig;
 
 
-    public RegionDTO getRegionData(String region)  {
+    public RegionDTO getRegionData(String query)  {
         try {
             CloseableHttpClient client = HttpClientBuilder.create().build(); // HttpClient 생성
-            String encodedRegion = URLEncoder.encode(region, StandardCharsets.UTF_8.toString());
+            String encodedRegion = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
             HttpGet getRequest = new HttpGet(regionApiConfig.getUrl()+"?query="+encodedRegion); //GET 메소드 URL 생성
             getRequest.addHeader("X-Naver-Client-Id", regionApiConfig.getClient_id()); //KEY 입력
             getRequest.addHeader("X-Naver-Client-Secret", regionApiConfig.getClient_secret()); //KEY 입력
@@ -49,7 +50,9 @@ public class RegionApiServiceImpl implements RegionApiService {
                 return regionDto;
             } else {
                 // 외부 API에서 받은 에러 메시지를 그대로 클라이언트에게 반환
-                throw new HttpResponseException(response.getStatusLine().getStatusCode(),result);
+               // throw new HttpResponseException(response.getStatusLine().getStatusCode(),result);
+
+                throw new BusinessException(result,ErrorCode.NAVER_REGION);
             }
 
         } catch (Exception e){

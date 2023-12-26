@@ -18,9 +18,9 @@ public class PlaceController {
     private final RegionApiService regionApiService;
 
     //url을 통해 검색어를 입력받기에 인코딩된 문자를 넘겨주어야 함
-    @GetMapping("/api")
-    public RegionDTO placeSearch(@RequestParam("query") String searchWord) {
-        return regionApiService.getRegionData(searchWord);
+    @GetMapping("/region")
+    public RegionDTO placeSearch(@RequestParam("query") String query) {
+        return regionApiService.getRegionData(query);
     }
 
     @PostMapping

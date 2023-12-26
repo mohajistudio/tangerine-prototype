@@ -21,7 +21,7 @@ public class PointJsonDeserializer extends JsonDeserializer<Point> {
     private final static GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
     @Override
-    public Point deserialize(JsonParser p, DeserializationContext context) throws IOException, JacksonException {
+    public Point deserialize(JsonParser p, DeserializationContext context) {
         try {
             TreeNode treeNode = p.readValueAsTree();
             if (treeNode.toString().isEmpty()) {

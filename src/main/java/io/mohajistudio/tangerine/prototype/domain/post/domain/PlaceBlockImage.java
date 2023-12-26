@@ -26,7 +26,7 @@ public class PlaceBlockImage extends BaseEntity {
 
     @Setter
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(optional = false)
     private PlaceBlock placeBlock;
 
     public void setImageMimeType(String imageMimeType) {

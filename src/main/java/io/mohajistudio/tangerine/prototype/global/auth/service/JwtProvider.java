@@ -5,6 +5,7 @@ import io.mohajistudio.tangerine.prototype.global.auth.domain.SecurityMember;
 import io.mohajistudio.tangerine.prototype.global.config.JwtProperties;
 import io.mohajistudio.tangerine.prototype.global.auth.dto.GeneratedToken;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
+import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberRepository;
 import jakarta.annotation.PostConstruct;
@@ -18,8 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.*;
 
-import static io.mohajistudio.tangerine.prototype.global.enums.ErrorCode.MEMBER_NOT_FOUND;
-import static io.mohajistudio.tangerine.prototype.global.enums.ErrorCode.MISMATCH_REFRESH_TOKEN;
+import static io.mohajistudio.tangerine.prototype.global.enums.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -31,6 +31,7 @@ public class JwtProvider {
     private Key signingKey;
     private JwtParser jwtParser;
     private static final Long ACCESS_TOKEN_PERIOD = 1000L * 60L * 60L; // 1시간
+//    private static final Long ACCESS_TOKEN_PERIOD = 1000L * 60L * 60L * 24L * 14L; // 2주
     private static final Long REFRESH_TOKEN_PERIOD = 1000L * 60L * 60L * 24L * 14L; // 2주
     private static final short REFRESH_TOKEN_EXPIRATION_THRESHOLD_DAYS = 7;
 
@@ -104,6 +105,10 @@ public class JwtProvider {
         }
 
         Member member = findMember.get();
+
+        if(member.getRefreshToken() == null) {
+            throw new BusinessException(MISMATCH_REFRESH_TOKEN);
+        }
 
         if(!member.getRefreshToken().equals(refreshToken)) {
             throw new BusinessException(MISMATCH_REFRESH_TOKEN);

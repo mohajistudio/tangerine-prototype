@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class PlaceService {
     private final PlaceRepository placeRepository;
 
-    public Place addPlace(Place place) {
-        return placeRepository.save(place);
+    public void addPlace(Place place) {
+        placeRepository.save(place);
     }
 }

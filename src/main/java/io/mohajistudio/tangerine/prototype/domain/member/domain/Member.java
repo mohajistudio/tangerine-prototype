@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
+import java.util.Set;
 
 @SuperBuilder
 @Getter
@@ -38,35 +38,35 @@ public class Member extends BaseEntity {
 
     @JsonIgnore
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<Notification> notifications;
+    private Set<Notification> notifications;
 
     @JsonIgnore
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<Post> posts;
+    private Set<Post> posts;
 
     @JsonIgnore
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<Comment> comments;
+    private Set<Comment> comments;
 
     @JsonIgnore
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<FavoriteComment> favoriteComments;
+    private Set<FavoriteComment> favoriteComments;
 
     @JsonIgnore
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<Follow> follows;
+    private Set<Follow> follows;
 
     @JsonIgnore
     @OneToMany(mappedBy = "followMember", fetch = FetchType.LAZY)
-    private List<Follow> followMembers;
+    private Set<Follow> followMembers;
 
     @JsonIgnore
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<ScrapPost> scrapPosts;
+    private Set<ScrapPost> scrapPosts;
 
     @JsonIgnore
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<FavoritePost> favoritePosts;
+    private Set<FavoritePost> favoritePosts;
 
     public static Member createMember(Provider provider, String email) {
         return Member.builder().provider(provider).role(Role.MEMBER).email(email).build();

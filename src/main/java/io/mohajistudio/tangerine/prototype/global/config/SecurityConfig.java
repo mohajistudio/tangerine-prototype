@@ -40,7 +40,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
                     auth.requestMatchers(HttpMethod.PATCH, "/tokens", "/posts/*").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/posts", "/places", "/posts/*/comments").hasAnyAuthority(AUTHORITY_MEMBER);
-                    auth.requestMatchers(HttpMethod.GET,"/places/api").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.GET,"/places/region").hasAnyAuthority(AUTHORITY_MEMBER);
 
                     auth.requestMatchers(HttpMethod.PATCH, "/posts/*/favorites", "/places").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.requestMatchers(HttpMethod.DELETE, "/posts/*").hasAnyAuthority(AUTHORITY_MEMBER);

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
-@Tag(name = "Test", description = "테스트 API")
+@Tag(name = "Test", description = "Test API")
 @Controller
 @AllArgsConstructor
 public class HomeController {

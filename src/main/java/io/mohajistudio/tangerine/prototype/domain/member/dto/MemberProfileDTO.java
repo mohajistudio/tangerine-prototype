@@ -1,10 +1,7 @@
 package io.mohajistudio.tangerine.prototype.domain.member.dto;
 
 
-import io.mohajistudio.tangerine.prototype.domain.member.domain.MemberProfile;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;

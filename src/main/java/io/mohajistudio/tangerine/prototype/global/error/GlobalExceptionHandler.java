@@ -2,6 +2,7 @@ package io.mohajistudio.tangerine.prototype.global.error;
 
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
+import io.mohajistudio.tangerine.prototype.global.error.exception.UrlNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * @ModelAttribut 으로 binding error 발생시 BindException 발생한다.
+     * @ModelAttribute 으로 binding error 발생시 BindException 발생한다.
      * ref https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-modelattrib-method-args
      */
     @ExceptionHandler(BindException.class)
@@ -109,5 +110,11 @@ public class GlobalExceptionHandler {
         log.error("handleIllegalArgumentException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.ILLEGAL_ARGUMENT);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UrlNotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handleUrlNotFoundException(UrlNotFoundException e) {
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.URL_NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

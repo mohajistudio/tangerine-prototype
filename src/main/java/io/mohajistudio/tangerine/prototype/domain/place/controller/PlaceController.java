@@ -1,6 +1,5 @@
 package io.mohajistudio.tangerine.prototype.domain.place.controller;
 
-import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceDTO;
 import io.mohajistudio.tangerine.prototype.domain.place.mapper.PlaceMapper;
 import io.mohajistudio.tangerine.prototype.domain.place.service.PlaceService;

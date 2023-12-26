@@ -9,7 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -46,29 +46,29 @@ public class Post extends BaseEntity {
 
     @JsonIgnore
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private List<ScrapPost> scrapPosts;
+    private Set<ScrapPost> scrapPosts;
 
     @JsonIgnore
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private List<FavoritePost> favoritePosts;
+    private Set<FavoritePost> favoritePosts;
 
     @JsonIgnore
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private List<Comment> comments;
+    private Set<Comment> comments;
 
-    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    private List<TextBlock> textBlocks;
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private Set<TextBlock> textBlocks;
 
-    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    private List<PlaceBlock> placeBlocks;
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private Set<PlaceBlock> placeBlocks;
 
-    public void setPlaceBlocks(List<PlaceBlock> placeBlocks) {
+    public void setPlaceBlocks(Set<PlaceBlock> placeBlocks) {
         this.placeBlocks = placeBlocks;
         blockCnt += (short) placeBlocks.size();
         placeBlocks.forEach(placeBlock -> placeBlock.setPost(this));
     }
 
-    public void setTextBlocks(List<TextBlock> textBlocks) {
+    public void setTextBlocks(Set<TextBlock> textBlocks) {
         this.textBlocks = textBlocks;
         blockCnt += (short) textBlocks.size();
         textBlocks.forEach(textBlock -> textBlock.setPost(this));

@@ -14,10 +14,4 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-
-	@Bean
-	public OpenAPI openAPI() {
-		Info info = new Info().description("MohajiStudio, 4th project prototype blog service").title("Tengerine Prototype").version("v0.0.1");
-		return new OpenAPI().info(info);
-	}
 }

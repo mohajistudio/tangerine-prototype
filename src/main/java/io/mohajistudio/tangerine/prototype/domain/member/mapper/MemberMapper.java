@@ -5,7 +5,6 @@ import io.mohajistudio.tangerine.prototype.domain.member.domain.MemberProfile;
 import io.mohajistudio.tangerine.prototype.domain.member.dto.MemberDTO;
 import io.mohajistudio.tangerine.prototype.domain.member.dto.MemberProfileDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface MemberMapper {

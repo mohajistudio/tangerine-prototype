@@ -6,13 +6,15 @@ import io.mohajistudio.tangerine.prototype.domain.post.domain.*;
 import io.mohajistudio.tangerine.prototype.domain.post.repository.*;
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
+import io.mohajistudio.tangerine.prototype.global.error.exception.UrlNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,18 +26,28 @@ public class PostService {
     private final PlaceBlockRepository placeBlockRepository;
     private final PlaceBlockImageRepository placeBlockImageRepository;
 
+    @Transactional
     public void addPost(Post post, Long memberId) {
+        checkBlockOrderNumber(post.getPlaceBlocks(), post.getTextBlocks());
+
         Optional<Member> findMember = memberRepository.findById(memberId);
         findMember.ifPresent(post::setMember);
 
-        post.getTextBlocks().forEach(textBlock -> textBlock.setPost(post));
+        postRepository.save(post);
+
+        post.getTextBlocks().forEach(textBlock -> {
+            textBlock.setPost(post);
+            textBlockRepository.save(textBlock);
+        });
 
         post.getPlaceBlocks().forEach(placeBlock -> {
             placeBlock.setPost(post);
-            placeBlock.getPlaceBlockImages().forEach(placeBlockImage -> placeBlockImage.setPlaceBlock(placeBlock));
+            placeBlockRepository.save(placeBlock);
+            placeBlock.getPlaceBlockImages().forEach(placeBlockImage -> {
+                placeBlockImage.setPlaceBlock(placeBlock);
+                placeBlockImageRepository.save(placeBlockImage);
+            });
         });
-
-        postRepository.save(post);
     }
 
     public Page<Post> findPostListByPage(Pageable pageable) {
@@ -43,17 +55,17 @@ public class PostService {
     }
 
     public Post findPostDetails(Long id) {
-        Optional<Post> findPost = postRepository.findById(id);
-        if (findPost.isEmpty()) throw new BusinessException(ErrorCode.URL_NOT_FOUND);
+        Optional<Post> findPost = postRepository.findByIdDetails(id);
+        if (findPost.isEmpty()) throw new UrlNotFoundException();
         return findPost.get();
     }
 
     @Transactional
-    public void modifyPost(Long memberId, Post modifyPost) {
+    public void modifyPost(Post modifyPost, Long memberId) {
         Optional<Post> findPost = postRepository.findById(modifyPost.getId());
 
         if (findPost.isEmpty()) {
-            throw new BusinessException(ErrorCode.URL_NOT_FOUND);
+            throw new UrlNotFoundException();
         }
 
         Post post = findPost.get();
@@ -61,6 +73,9 @@ public class PostService {
         if (!post.getMember().getId().equals(memberId)) {
             throw new BusinessException(ErrorCode.NO_PERMISSION);
         }
+
+        checkBlockOrderNumber(modifyPost.getPlaceBlocks(), modifyPost.getTextBlocks());
+        checkDeletedBlock(modifyPost.getPlaceBlocks(), modifyPost.getTextBlocks(), post.getPlaceBlocks(), post.getTextBlocks());
 
         postRepository.update(post.getId(), modifyPost.getTitle(), modifyPost.getVisitedAt());
 
@@ -82,7 +97,7 @@ public class PostService {
             if (findPlaceBlock.isEmpty()) {
                 throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
             }
-            placeBlockRepository.update(findPlaceBlock.get().getId(), placeBlock.getContent(), placeBlock.getOrderNumber(), placeBlock.getRating());
+            placeBlockRepository.update(findPlaceBlock.get().getId(), placeBlock.getContent(), placeBlock.getOrderNumber(), placeBlock.getRating(), placeBlock.getCategory(), placeBlock.getPlace());
         }
     }
 
@@ -115,7 +130,7 @@ public class PostService {
     @Transactional
     public void modifyFavoritePost(Long id, Long memberId) {
         Optional<Post> findPost = postRepository.findById(id);
-        if (findPost.isEmpty()) throw new BusinessException(ErrorCode.URL_NOT_FOUND);
+        if (findPost.isEmpty()) throw new UrlNotFoundException();
         Post post = findPost.get();
 
         Optional<FavoritePost> findFavoritePost = favoritePostRepository.findByMemberIdAndPostId(memberId, id);
@@ -129,5 +144,83 @@ public class PostService {
             favoritePostRepository.save(favoritePost);
             postRepository.updateFavoriteCnt(post.getId(), post.getFavoriteCnt() + 1);
         }
+    }
+
+    @Transactional
+    public void deletePost(Long id, Long memberId) {
+        Optional<Post> findPost = postRepository.findByIdDetails(id);
+        if (findPost.isEmpty()) throw new UrlNotFoundException();
+        Post post = findPost.get();
+
+        if (!post.getMember().getId().equals(memberId)) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION);
+        }
+
+        LocalDateTime deletedAt = LocalDateTime.now();
+
+        postRepository.delete(id, deletedAt);
+
+        post.getTextBlocks().forEach(textBlock -> textBlockRepository.delete(textBlock.getId(), deletedAt));
+        post.getPlaceBlocks().forEach(placeBlock -> {
+            placeBlockRepository.delete(placeBlock.getId(), deletedAt);
+            placeBlock.getPlaceBlockImages().forEach(placeBlockImage ->
+                    placeBlockImageRepository.delete(placeBlockImage.getId(), deletedAt)
+            );
+        });
+    }
+
+    private void checkBlockOrderNumber(Set<PlaceBlock> placeBlocks, Set<TextBlock> textBlocks) {
+        Set<Short> orderNumbers = new HashSet<>();
+
+        placeBlocks.forEach(placeBlock -> {
+            if (!orderNumbers.add(placeBlock.getOrderNumber())) {
+                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+            }
+        });
+        textBlocks.forEach(textBlock -> {
+            if (!orderNumbers.add(textBlock.getOrderNumber())) {
+                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+            }
+        });
+
+        int totalSize = placeBlocks.size() + textBlocks.size();
+        for (short i = 1; i <= totalSize; i++) {
+            if (!orderNumbers.contains(i)) {
+                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+            }
+        }
+    }
+
+    private void checkDeletedBlock(Set<PlaceBlock> modifyPlaceBlocks, Set<TextBlock> modifyTextBlocks, Set<PlaceBlock> placeBlocks, Set<TextBlock> textBlocks) {
+        Set<Long> blockIds = new HashSet<>();
+        Set<Long> modifyBlockIds = new HashSet<>();
+        Set<Long> placeBlockImageIds = new HashSet<>();
+        Set<Long> modifyPlaceBlockImageIds = new HashSet<>();
+        LocalDateTime deletedAt = LocalDateTime.now();
+
+        textBlocks.forEach(textBlock -> blockIds.add(textBlock.getId()));
+        modifyTextBlocks.forEach(textBlock -> modifyBlockIds.add(textBlock.getId()));
+        blockIds.forEach(blockId -> {
+            if (!modifyBlockIds.contains(blockId)) textBlockRepository.delete(blockId, deletedAt);
+        });
+
+        blockIds.clear();
+        modifyBlockIds.clear();
+
+        placeBlocks.forEach(placeBlock -> {
+            blockIds.add(placeBlock.getId());
+            placeBlock.getPlaceBlockImages().forEach(placeBlockImage -> placeBlockImageIds.add(placeBlockImage.getId()));
+        });
+        modifyPlaceBlocks.forEach(placeBlock -> {
+            modifyBlockIds.add(placeBlock.getId());
+            placeBlock.getPlaceBlockImages().forEach(placeBlockImage -> modifyPlaceBlockImageIds.add(placeBlockImage.getId()));
+        });
+        blockIds.forEach(blockId -> {
+            if (!modifyBlockIds.contains(blockId)) placeBlockRepository.delete(blockId, deletedAt);
+        });
+
+        placeBlockImageIds.forEach(placeBlockImageId -> {
+            if(!modifyPlaceBlockImageIds.contains(placeBlockImageId)) placeBlockImageRepository.delete(placeBlockImageId, deletedAt);
+        });
     }
 }

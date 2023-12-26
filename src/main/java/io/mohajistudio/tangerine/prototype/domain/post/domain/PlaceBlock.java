@@ -5,12 +5,10 @@ import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @SuperBuilder
@@ -32,7 +30,7 @@ public class PlaceBlock extends BaseEntity {
 
     @Setter
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Post post;
 
     @Setter
@@ -43,10 +41,10 @@ public class PlaceBlock extends BaseEntity {
     @ManyToOne(optional = false)
     private Category category;
 
-    @OneToMany(mappedBy = "placeBlock", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    private List<PlaceBlockImage> placeBlockImages;
+    @OneToMany(mappedBy = "placeBlock", fetch = FetchType.EAGER)
+    private Set<PlaceBlockImage> placeBlockImages;
 
-    public void setPlaceBlockImages(List<PlaceBlockImage> placeBlockImages) {
+    public void setPlaceBlockImages(Set<PlaceBlockImage> placeBlockImages) {
         this.placeBlockImages = placeBlockImages;
         placeBlockImages.forEach(placeBlockImage -> placeBlockImage.setPlaceBlock(this));
     }

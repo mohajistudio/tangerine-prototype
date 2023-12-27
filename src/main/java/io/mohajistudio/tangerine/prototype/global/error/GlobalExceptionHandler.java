@@ -105,7 +105,7 @@ public class GlobalExceptionHandler {
         final ErrorResponse response = ErrorResponse.of(ErrorCode.DATA_INTEGRITY_VIOLATION);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
+    
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<ErrorResponse> handleInvalidDataAccessApiUsageException(IllegalArgumentException e) {
         log.error("handleIllegalArgumentException", e);

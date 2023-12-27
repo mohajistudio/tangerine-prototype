@@ -1,6 +1,7 @@
 package io.mohajistudio.tangerine.prototype.domain.post.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.mohajistudio.tangerine.prototype.domain.post.domain.PlaceBlock;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

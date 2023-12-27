@@ -31,7 +31,7 @@ public class PointJsonDeserializer extends JsonDeserializer<Point> {
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Double> map = objectMapper.readValue(treeNode.toString(), new TypeReference<>() {});
             double lat = map.get("lat");
-            double lng = map.get("lat");
+            double lng = map.get("lng");
             return geometryFactory.createPoint(new Coordinate(lat, lng));
         } catch (Exception e) {
             return null;

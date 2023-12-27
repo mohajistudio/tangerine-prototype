@@ -5,7 +5,6 @@ import io.mohajistudio.tangerine.prototype.global.auth.domain.SecurityMember;
 import io.mohajistudio.tangerine.prototype.global.config.JwtProperties;
 import io.mohajistudio.tangerine.prototype.global.auth.dto.GeneratedToken;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
-import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberRepository;
 import jakarta.annotation.PostConstruct;

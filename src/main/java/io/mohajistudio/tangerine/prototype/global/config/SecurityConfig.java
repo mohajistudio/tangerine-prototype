@@ -35,16 +35,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*", "/posts", "/posts/*", "/login/kakao").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*", "/posts", "/posts/*", "/login/kakao", "/posts/*/comments").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/swagger", "/swagger-ui/**", "/v3/api-docs/**").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
-                    auth.requestMatchers(HttpMethod.PATCH, "/tokens", "/posts/*").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/posts", "/places", "/posts/*/comments").hasAnyAuthority(AUTHORITY_MEMBER);
-                    auth.requestMatchers(HttpMethod.GET,"/places/region").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.PATCH, "/tokens").permitAll();
 
-                    auth.requestMatchers(HttpMethod.PATCH, "/posts/*/favorites", "/places").hasAnyAuthority(AUTHORITY_MEMBER);
-                    auth.requestMatchers(HttpMethod.DELETE, "/posts/*").hasAnyAuthority(AUTHORITY_MEMBER);
-                    auth.requestMatchers("/logout", "/secured/home").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
+
+                    auth.requestMatchers(HttpMethod.GET,"/places/region").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.POST, "/posts", "/places", "/posts/*/comments").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.PATCH, "/logout", "/posts/*/favorites", "/places", "/posts/*", "/posts/*/comments/*").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.DELETE, "/posts/*", "/posts/*/comments/*").hasAnyAuthority(AUTHORITY_MEMBER);
                 }).csrf(AbstractHttpConfigurer::disable).sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth2Login -> {
                     oauth2Login.successHandler(oAuth2SuccessHandler);

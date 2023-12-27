@@ -10,13 +10,20 @@ import io.mohajistudio.tangerine.prototype.domain.post.repository.PostRepository
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import io.mohajistudio.tangerine.prototype.global.error.exception.UrlNotFoundException;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
@@ -45,8 +52,54 @@ public class CommentService {
                 throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
             }
             comment.setGroupNumber(parentGroupNumber);
+        } else {
+            throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
         commentRepository.save(comment);
+    }
+
+    public Page<Comment> findCommentListByPage(Long postId, Pageable pageable) {
+        Optional<Post> findPost = postRepository.findById(postId);
+        if (findPost.isEmpty()) {
+            throw new UrlNotFoundException();
+        }
+
+        return commentRepository.findByPostId(postId, pageable);
+    }
+
+    public void patchComment(Comment modifyComment, Long postId, Long memberId) {
+        Optional<Member> findMember = memberRepository.findById(memberId);
+        findMember.ifPresent(modifyComment::setMember);
+
+        Optional<Post> findPost = postRepository.findById(postId);
+        if (findPost.isEmpty()) {
+            throw new UrlNotFoundException();
+        }
+
+        validateComment(modifyComment.getId(), postId, memberId);
+
+        commentRepository.update(memberId, modifyComment.getContent());
+    }
+
+    public void deleteComment(Long commentId, Long postId, Long memberId) {
+        validateComment(commentId, postId, memberId);
+
+        LocalDateTime deletedAt = LocalDateTime.now();
+        commentRepository.delete(commentId, deletedAt);
+    }
+
+    private void validateComment(Long commentId, Long postId, Long memberId) {
+        Optional<Comment> findComment = commentRepository.findById(commentId);
+
+        if (findComment.isEmpty()) {
+            throw new UrlNotFoundException();
+        }
+
+        Comment comment = findComment.get();
+
+        if (!Objects.equals(comment.getPost().getId(), postId) || !Objects.equals(comment.getMember().getId(), memberId)) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package io.mohajistudio.tangerine.prototype.domain.post.service;
 
+import io.mohajistudio.tangerine.prototype.domain.post.domain.Category;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberRepository;
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;

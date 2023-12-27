@@ -25,7 +25,6 @@ public class PostDTO {
     @Setter
     @Schema(name = "PostDTO.Details", description = "게시글의 상세를 반환할 때 사용할 DTO")
     public static class Details extends PostDTO.Compact {
-        private Long id;
         @Valid
         private Set<TextBlockDTO.Details> textBlocks;
         @Valid

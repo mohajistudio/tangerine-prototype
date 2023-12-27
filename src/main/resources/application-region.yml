@@ -1,0 +1,4 @@
+region:
+    url: https://openapi.naver.com/v1/search/local.json
+    client_id: zMI1KmpACaqtW5T9Nfej
+    client_secret: Y_ulonN6mX

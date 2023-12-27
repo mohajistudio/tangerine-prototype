@@ -30,7 +30,6 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtProvider jwtProvider;
     private static final String[] AUTHORITY_MEMBER = {"MEMBER", "MANAGER", "ADMIN"};
-    private static final String[] AUTHORITY_MANAGER = {"MANAGER", "ADMIN"};
     private static final String AUTHORITY_GUEST = "GUEST";
 
     @Bean

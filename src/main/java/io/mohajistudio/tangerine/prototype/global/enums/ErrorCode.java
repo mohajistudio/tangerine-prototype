@@ -28,7 +28,7 @@ public enum ErrorCode {
 
 
     //Region
-    NAVER_REGION(500, "R001", "API로부터 에러가 발생했습니다");
+    KAKAO_PLACE_SEARCH(500, "R001", "카카오 장소 검색 API를 호출하는 도중 에러가 발생했습니다");
 
     private final String code;
     private final String message;

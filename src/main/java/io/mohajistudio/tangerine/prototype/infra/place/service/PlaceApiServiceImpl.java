@@ -1,12 +1,12 @@
 package io.mohajistudio.tangerine.prototype.infra.place.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
-import io.mohajistudio.tangerine.prototype.infra.place.config.PlaceApiProperties;
-import io.mohajistudio.tangerine.prototype.infra.place.dto.PlaceApiResultDTO;
-import io.mohajistudio.tangerine.prototype.infra.place.mapper.PlaceApiMapper;
+import io.mohajistudio.tangerine.prototype.infra.place.config.PlaceSearchApiProperties;
+import io.mohajistudio.tangerine.prototype.infra.place.dto.PlaceKakaoSearchApiResultDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.ResponseHandler;
@@ -18,41 +18,35 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class PlaceApiServiceImpl implements PlaceApiService {
-    private final PlaceApiProperties regionApiConfig;
-    private final PlaceApiMapper placeApiMapper;
+    private final PlaceSearchApiProperties placeApiConfig;
 
-    public Set<Place> searchPlace(String query) {
+    public PlaceKakaoSearchApiResultDTO searchPlace(String query, int page, int size) {
         try {
             CloseableHttpClient client = HttpClientBuilder.create().build();
-            String encodedRegion = URLEncoder.encode(query, StandardCharsets.UTF_8);
-            HttpGet getRequest = new HttpGet(regionApiConfig.getUrl() + "?query=" + encodedRegion + regionApiConfig.getUrlOptions());
-            getRequest.addHeader("X-Naver-Client-Id", regionApiConfig.getClientId());
-            getRequest.addHeader("X-Naver-Client-Secret", regionApiConfig.getClientSecret());
+            HttpGet getRequest = new HttpGet(placeApiConfig.getUrl() + "?query=" + query + "&page=" + page + "&size=" + size);
+            getRequest.addHeader("Authorization", "KakaoAK " + placeApiConfig.getRestApiKey());
 
             CloseableHttpResponse response = client.execute(getRequest);
             ResponseHandler<String> handler = new BasicResponseHandler();
             String result = handler.handleResponse(response);
             ObjectMapper objectMapper = new ObjectMapper();
-            PlaceApiResultDTO placeApiResultDTO = objectMapper.readValue(result, PlaceApiResultDTO.class);
+            PlaceKakaoSearchApiResultDTO placeKakaoSearchApiResultDTO = objectMapper.readValue(result, PlaceKakaoSearchApiResultDTO.class);
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
-                return placeApiResultDTO.getItems().stream().map(placeApiMapper::toEntity).collect(Collectors.toSet());
+                return placeKakaoSearchApiResultDTO;
             } else {
-                throw new BusinessException(result, ErrorCode.NAVER_REGION);
+                throw new BusinessException(result, ErrorCode.KAKAO_PLACE_SEARCH);
             }
 
         } catch (Exception e) {
             System.out.println("e = " + e.getMessage());
-            throw new BusinessException(ErrorCode.NAVER_REGION);
+            throw new BusinessException(ErrorCode.KAKAO_PLACE_SEARCH);
         }
     }
+
 }

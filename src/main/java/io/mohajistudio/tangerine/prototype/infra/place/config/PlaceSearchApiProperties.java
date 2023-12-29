@@ -10,10 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "place")
-public class PlaceApiProperties {
+@ConfigurationProperties(prefix = "place.search")
+public class PlaceSearchApiProperties {
     private String url;
-    private String clientId;
-    private String clientSecret;
-    private String urlOptions;
+    private String restApiKey;
 }

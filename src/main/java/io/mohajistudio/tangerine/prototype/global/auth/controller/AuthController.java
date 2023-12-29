@@ -2,7 +2,7 @@ package io.mohajistudio.tangerine.prototype.global.auth.controller;
 
 import io.mohajistudio.tangerine.prototype.global.auth.dto.GeneratedToken;
 import io.mohajistudio.tangerine.prototype.global.auth.dto.TokenModifyRequest;
-import io.mohajistudio.tangerine.prototype.global.auth.dto.RegisterRequest;
+import io.mohajistudio.tangerine.prototype.global.auth.dto.RegisterDTO;
 import io.mohajistudio.tangerine.prototype.global.auth.domain.SecurityMember;
 import io.mohajistudio.tangerine.prototype.global.auth.service.AuthService;
 import io.mohajistudio.tangerine.prototype.global.auth.service.JwtProvider;
@@ -19,7 +19,7 @@ public class AuthController {
     private final JwtProvider jwtProvider;
 
     @PostMapping("/register")
-    public GeneratedToken register(@Valid @RequestBody RegisterRequest registerDTO) {
+    public GeneratedToken register(@Valid @RequestBody RegisterDTO registerDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
         return authService.register(securityMember, registerDTO);

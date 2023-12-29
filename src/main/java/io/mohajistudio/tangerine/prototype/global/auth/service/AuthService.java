@@ -1,7 +1,7 @@
 package io.mohajistudio.tangerine.prototype.global.auth.service;
 
 import io.mohajistudio.tangerine.prototype.global.auth.dto.GeneratedToken;
-import io.mohajistudio.tangerine.prototype.global.auth.dto.RegisterRequest;
+import io.mohajistudio.tangerine.prototype.global.auth.dto.RegisterDTO;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.MemberProfile;
 import io.mohajistudio.tangerine.prototype.global.auth.domain.SecurityMember;
@@ -26,7 +26,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public GeneratedToken register(SecurityMember securityMember, RegisterRequest registerDTO) {
+    public GeneratedToken register(SecurityMember securityMember, RegisterDTO registerDTO) {
         Optional<Member> findMember = memberRepository.findById(securityMember.getId());
 
         if (findMember.isEmpty()) {

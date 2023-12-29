@@ -1,12 +1,16 @@
 package io.mohajistudio.tangerine.prototype.domain.place.controller;
 
+import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceDTO;
 import io.mohajistudio.tangerine.prototype.domain.place.mapper.PlaceMapper;
 import io.mohajistudio.tangerine.prototype.domain.place.service.PlaceService;
-import io.mohajistudio.tangerine.prototype.infra.region.dto.RegionDTO;
+import io.mohajistudio.tangerine.prototype.infra.place.service.PlaceApiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/places")
@@ -14,16 +18,16 @@ import org.springframework.web.bind.annotation.*;
 public class PlaceController {
     private final PlaceService placeService;
     private final PlaceMapper placeMapper;
-    private final RegionApiService regionApiService;
+    private final PlaceApiService placeApiService;
 
-    //url을 통해 검색어를 입력받기에 인코딩된 문자를 넘겨주어야 함
-    @GetMapping("/region")
-    public RegionDTO placeSearch(@RequestParam("query") String query) {
-        return regionApiService.getRegionData(query);
+    @GetMapping("/search")
+    public Set<PlaceDTO.Search> placeSearch(@RequestParam("query") String query) {
+        Set<Place> searchedPlace = placeApiService.searchPlace(query);
+        return searchedPlace.stream().map(placeMapper::toSearchDTO).collect(Collectors.toSet());
     }
 
     @PostMapping
     public void placeAdd(@Valid @RequestBody PlaceDTO.Add placeAddRequest) {
-        placeService.addPlace(placeMapper.placeAddRequestToPlace(placeAddRequest));
+        placeService.addPlace(placeMapper.toEntity(placeAddRequest));
     }
 }

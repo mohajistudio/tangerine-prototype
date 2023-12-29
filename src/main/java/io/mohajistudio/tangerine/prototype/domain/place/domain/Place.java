@@ -24,14 +24,13 @@ public class Place extends BaseEntity {
     @Column(nullable = false, columnDefinition = "geometry(Point, 4326)")
     private Point coordinates;
     private String thumbnail;
-    private  String province;//광역시/도
-    private  String city;//시/군/구
-    private  String district;//읍/면/동
-    private  String detail;//이하
+    private String addressProvince;//광역시/도
+    private String addressCity;//시/군/구
+    private String addressDistrict;//읍/면/동
+    private String addressDetail;//이하
     private String roadAddress;
     @Column(length = 500)
     private String description;
-
 
     @JsonIgnore
     @OneToMany(mappedBy = "place")

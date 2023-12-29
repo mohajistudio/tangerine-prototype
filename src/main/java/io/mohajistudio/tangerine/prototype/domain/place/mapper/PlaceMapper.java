@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface PlaceMapper {
-    Place placeAddRequestToPlace(PlaceDTO.Add placeAddDTO);
-    PlaceDTO.Details placeToPlaceAddResponse(Place place);
+    Place toEntity(PlaceDTO.Add placeAddDTO);
+    PlaceDTO.Details toDetailsDTO(Place place);
+    PlaceDTO.Search toSearchDTO(Place place);
 }

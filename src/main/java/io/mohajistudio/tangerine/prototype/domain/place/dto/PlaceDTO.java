@@ -12,7 +12,13 @@ public class PlaceDTO {
     @NotNull
     private String name;
     @NotNull
-    private String address;
+    private String addressProvince; //광역시/도
+    @NotNull
+    private String addressCity; //시/군/구
+    @NotNull
+    private String addressDistrict; //읍/면/동
+    @NotNull
+    private String addressDetail; //이하
     @NotNull
     private String roadAddress;
     @NotNull
@@ -29,5 +35,17 @@ public class PlaceDTO {
     public static class Details extends PlaceDTO {
         @NotNull
         private Long id;
+    }
+
+    @Getter
+    @Setter
+    public static class Search {
+        private String name;
+        private String addressProvince;
+        private String addressCity;
+        private String addressDistrict;
+        private String addressDetail;
+        private String roadAddress;
+        private String description;
     }
 }

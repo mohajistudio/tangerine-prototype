@@ -1,9 +1,9 @@
-package io.mohajistudio.tangerine.prototype.infra.region.dto;
+package io.mohajistudio.tangerine.prototype.infra.place.dto;
 
 import lombok.Data;
 
 @Data
-public class Item {
+public class PlaceApiDTO {
     private String title;
     private String link;
     private String category;

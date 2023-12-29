@@ -1,19 +1,15 @@
-package io.mohajistudio.tangerine.prototype.infra.region.dto;
+package io.mohajistudio.tangerine.prototype.infra.place.dto;
 
 import lombok.Data;
-import lombok.Getter;
 
 import java.util.List;
 
 
 @Data
-public class RegionDTO {
-
+public class PlaceApiResultDTO {
         private String lastBuildDate;
         private int total;
         private int start;
         private int display;
-        private List<Item> items;
-
-
+        private List<PlaceApiDTO> items;
 }

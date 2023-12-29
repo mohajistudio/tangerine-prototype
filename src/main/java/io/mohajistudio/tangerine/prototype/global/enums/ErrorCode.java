@@ -28,7 +28,7 @@ public enum ErrorCode {
 
 
     //Region
-    NAVER_REGION(500, "R001", "api로부터 에러가 발생했습니다.");
+    NAVER_REGION(500, "R001", "API로부터 에러가 발생했습니다");
 
     private final String code;
     private final String message;

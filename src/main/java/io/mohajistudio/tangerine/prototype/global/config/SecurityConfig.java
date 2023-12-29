@@ -41,7 +41,7 @@ public class SecurityConfig {
 
                     auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
 
-                    auth.requestMatchers(HttpMethod.GET,"/places/region").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.GET,"/places/search").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.requestMatchers(HttpMethod.POST, "/posts", "/places", "/posts/*/comments").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.requestMatchers(HttpMethod.PATCH, "/logout", "/posts/*/favorites", "/places", "/posts/*", "/posts/*/comments/*").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.requestMatchers(HttpMethod.DELETE, "/posts/*", "/posts/*/comments/*").hasAnyAuthority(AUTHORITY_MEMBER);

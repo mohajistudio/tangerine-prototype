@@ -1,22 +1,6 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/tangerine_prototype
-    username:
-    password:
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
-    defer-datasource-initialization: true
   profiles:
     include: secret, place
-  sql:
-    init:
-      mode: always
 springdoc:
   swagger-ui:
     path: /swagger

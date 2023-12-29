@@ -27,6 +27,8 @@ out/
 !**/src/test/**/out/
 application-secret.yml
 application-place.yml
+application-dev.yml
+application-prod.yml
 /src/main/generated/**
 /src/main/generated
 /src/main/gen

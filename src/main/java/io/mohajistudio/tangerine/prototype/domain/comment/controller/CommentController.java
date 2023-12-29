@@ -28,7 +28,7 @@ public class CommentController {
 
     @GetMapping
     public Page<CommentDTO.Details> commentListByPage(@PathVariable(name = "postId") Long postId, @ModelAttribute PageableParam pageableParam) {
-        Pageable pageable = PageRequest.of(pageableParam.getPage(), pageableParam.getSize());
+        Pageable pageable = PageRequest.of(pageableParam.getPage() - 1, pageableParam.getSize());
         Page<Comment> commentListByPage = commentService.findCommentListByPage(postId, pageable);
 
         return commentListByPage.map(commentMapper::commentAddDtoToComment);

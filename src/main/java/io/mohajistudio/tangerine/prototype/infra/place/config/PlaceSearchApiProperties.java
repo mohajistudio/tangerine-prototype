@@ -1,4 +1,4 @@
-package io.mohajistudio.tangerine.prototype.infra.region.config;
+package io.mohajistudio.tangerine.prototype.infra.place.config;
 
 
 import lombok.Getter;
@@ -10,11 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "region")
-public class RegionApiProperties {
+@ConfigurationProperties(prefix = "place.search")
+public class PlaceSearchApiProperties {
     private String url;
-    private String client_id;
-    private String client_secret;
-
-
+    private String restApiKey;
 }

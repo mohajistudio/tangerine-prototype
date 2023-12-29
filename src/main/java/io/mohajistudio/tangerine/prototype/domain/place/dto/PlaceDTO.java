@@ -8,7 +8,6 @@ import org.locationtech.jts.geom.Point;
 @Getter
 @Setter
 public class PlaceDTO {
-
     @NotNull
     private String name;
     @NotNull
@@ -17,7 +16,6 @@ public class PlaceDTO {
     private String roadAddress;
     @NotNull
     private Point coordinates;
-    private String description;
 
     @Getter
     @Setter
@@ -29,5 +27,6 @@ public class PlaceDTO {
     public static class Details extends PlaceDTO {
         @NotNull
         private Long id;
+        private String description;
     }
 }

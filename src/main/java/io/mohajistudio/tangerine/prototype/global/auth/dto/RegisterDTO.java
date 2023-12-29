@@ -1,5 +1,6 @@
 package io.mohajistudio.tangerine.prototype.global.auth.dto;
 
+import io.mohajistudio.tangerine.prototype.global.enums.Gender;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,13 +9,13 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class RegisterRequest {
+public class RegisterDTO {
     @NotNull
     @Past
     public LocalDate birthday;
 
     @NotNull
-    public char sex;
+    public Gender gender;
 
     @NotNull
     @NotBlank

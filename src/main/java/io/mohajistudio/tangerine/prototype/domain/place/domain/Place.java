@@ -34,6 +34,8 @@ public class Place extends BaseEntity {
     @Column(length = 500)
     private String description;
     @Setter
+    @Column(columnDefinition = "varchar(10)", nullable = false)
+    @Enumerated(EnumType.STRING)
     private PlaceSearchProvider placeSearchProvider;
     @Setter
     private Long providerId;

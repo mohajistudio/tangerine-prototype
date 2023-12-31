@@ -1,7 +1,6 @@
 package io.mohajistudio.tangerine.prototype.domain.comment.service;
 
 import io.mohajistudio.tangerine.prototype.domain.comment.domain.Comment;
-import io.mohajistudio.tangerine.prototype.domain.comment.dto.CommentDTO;
 import io.mohajistudio.tangerine.prototype.domain.comment.repository.CommentRepository;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberRepository;
@@ -10,7 +9,6 @@ import io.mohajistudio.tangerine.prototype.domain.post.repository.PostRepository
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import io.mohajistudio.tangerine.prototype.global.error.exception.UrlNotFoundException;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -68,7 +66,7 @@ public class CommentService {
         return commentRepository.findByPostId(postId, pageable);
     }
 
-    public void patchComment(Comment modifyComment, Long postId, Long memberId) {
+    public void modifyComment(Comment modifyComment, Long postId, Long memberId) {
         Optional<Member> findMember = memberRepository.findById(memberId);
         findMember.ifPresent(modifyComment::setMember);
 

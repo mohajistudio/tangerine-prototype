@@ -43,7 +43,7 @@ public class CommentController {
     }
 
     @PatchMapping("/{id}")
-    public void commentPatch(@RequestBody @Valid CommentDTO.Patch commentPatchDTO, @PathVariable(name = "postId") Long postId, @PathVariable(name = "id") Long id) {
+    public void commentModify(@RequestBody @Valid CommentDTO.Patch commentPatchDTO, @PathVariable(name = "postId") Long postId, @PathVariable(name = "id") Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
 
@@ -51,7 +51,7 @@ public class CommentController {
             throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        commentService.patchComment(commentMapper.commentAddDtoToComment(commentPatchDTO), postId, securityMember.getId());
+        commentService.modifyComment(commentMapper.commentAddDtoToComment(commentPatchDTO), postId, securityMember.getId());
     }
 
     @DeleteMapping("/{id}")

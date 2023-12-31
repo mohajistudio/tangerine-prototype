@@ -44,7 +44,6 @@ public class PlaceApiServiceImpl implements PlaceApiService {
             }
 
         } catch (Exception e) {
-            System.out.println("e = " + e.getMessage());
             throw new BusinessException(ErrorCode.KAKAO_PLACE_SEARCH);
         }
     }

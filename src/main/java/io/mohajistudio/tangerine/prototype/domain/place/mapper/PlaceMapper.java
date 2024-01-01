@@ -2,6 +2,7 @@ package io.mohajistudio.tangerine.prototype.domain.place.mapper;
 
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceDTO;
+import io.mohajistudio.tangerine.prototype.global.common.PointDTO;
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import io.mohajistudio.tangerine.prototype.infra.place.dto.PlaceKakaoSearchApiDTO;
@@ -23,17 +24,18 @@ public interface PlaceMapper {
     @Mapping(source = "address", target = "addressCity", qualifiedByName = "convertToCity")
     @Mapping(source = "address", target = "addressDistrict", qualifiedByName = "convertToDistrict")
     @Mapping(source = "address", target = "addressDetail", qualifiedByName = "convertToDetail")
+    @Mapping(source = ".", target = "coordinates", qualifiedByName = "setAddDTOCoordinates")
     Place toEntity(PlaceDTO.Add placeAddDTO);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "id", target = "providerId")
     @Mapping(source = "placeName", target = "name")
     @Mapping(source = "roadAddressName", target = "roadAddress")
-    @Mapping(source = ".", target = "coordinates", qualifiedByName = "setCoordinates")
     @Mapping(source = "addressName", target = "addressProvince", qualifiedByName = "convertToProvince")
     @Mapping(source = "addressName", target = "addressCity", qualifiedByName = "convertToCity")
     @Mapping(source = "addressName", target = "addressDistrict", qualifiedByName = "convertToDistrict")
     @Mapping(source = "addressName", target = "addressDetail", qualifiedByName = "convertToDetail")
+    @Mapping(source = ".", target = "coordinates", qualifiedByName = "setKakaoCoordinates")
     Place toEntity(PlaceKakaoSearchApiDTO placeKakaoSearchApiDTO);
 
     @Mapping(source = ".", target = "address", qualifiedByName = "setAddress")
@@ -44,10 +46,18 @@ public interface PlaceMapper {
         return place.getAddress();
     }
 
-    @Named("setCoordinates")
+    @Named("setKakaoCoordinates")
     default Point setCoordinates(PlaceKakaoSearchApiDTO placeKakaoSearchApiDTO) {
         double lat = Double.parseDouble(placeKakaoSearchApiDTO.getX());
         double lng = Double.parseDouble(placeKakaoSearchApiDTO.getY());
+        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+        return geometryFactory.createPoint(new Coordinate(lat, lng));
+    }
+
+    @Named("setAddDTOCoordinates")
+    default Point setCoordinates(PlaceDTO.Add placeDetailsDTO) {
+        double lat = placeDetailsDTO.getCoordinates().getLat();
+        double lng = placeDetailsDTO.getCoordinates().getLng();
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
         return geometryFactory.createPoint(new Coordinate(lat, lng));
     }

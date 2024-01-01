@@ -28,9 +28,9 @@ public class PlaceController {
     private final PlaceApiService placeApiService;
 
     @GetMapping
-    public Page<Place> placeListByPage(@RequestParam("query") String query, @ModelAttribute PageableParam pageableParam) {
+    public Page<PlaceDTO.Details> placeListByPage(@RequestParam("query") String query, @ModelAttribute PageableParam pageableParam) {
         Pageable pageable = PageRequest.of(pageableParam.getPage() - 1, pageableParam.getSize());
-        return placeService.findPlaceListByPage(query, pageable);
+        return placeService.findPlaceListByPage(query, pageable).map(placeMapper::toDetailsDTO);
     }
 
     @PostMapping

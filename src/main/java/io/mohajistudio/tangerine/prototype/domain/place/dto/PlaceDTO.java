@@ -1,5 +1,6 @@
 package io.mohajistudio.tangerine.prototype.domain.place.dto;
 
+import io.mohajistudio.tangerine.prototype.global.common.PointDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,13 @@ public class PlaceDTO {
     @NotNull
     private String roadAddress;
     @NotNull
-    private Point coordinates;
+    private PointDTO coordinates;
+
+    public void setCoordinates(Point coordinates) {
+        double lat = coordinates.getX();
+        double lng = coordinates.getY();
+        this.coordinates = PointDTO.builder().lat(lat).lng(lng).build();
+    }
 
     @Getter
     @Setter

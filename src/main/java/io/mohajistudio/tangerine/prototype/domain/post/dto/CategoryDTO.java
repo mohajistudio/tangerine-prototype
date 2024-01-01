@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class CategoryDTO {
     @NotNull
-    @Schema
+    @Schema(description = "Category Id", example = "1")
     private Long id;
 
     @Getter

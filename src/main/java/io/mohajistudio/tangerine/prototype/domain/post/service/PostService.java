@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static io.mohajistudio.tangerine.prototype.global.enums.ErrorCode.MAX_POSTS_PER_DAY;
+import static io.mohajistudio.tangerine.prototype.global.enums.ErrorCode.TOO_FREQUENT_POST;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -25,9 +28,12 @@ public class PostService {
     private final TextBlockRepository textBlockRepository;
     private final PlaceBlockRepository placeBlockRepository;
     private final PlaceBlockImageRepository placeBlockImageRepository;
+    private static final int MIN_POSTS_INTERVAL_MINUTES = 10;
+    private static final int MAX_POSTS_INTERVAL_HOURS = 24;
 
     @Transactional
     public void addPost(Post post, Long memberId) {
+        countPostsToday(memberId);
         checkBlockOrderNumberAndContentIsEmpty(post.getPlaceBlocks(), post.getTextBlocks());
 
         Optional<Member> findMember = memberRepository.findById(memberId);
@@ -174,25 +180,25 @@ public class PostService {
 
         placeBlocks.forEach(placeBlock -> {
             if (!orderNumbers.add(placeBlock.getOrderNumber())) {
-                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+                throw new BusinessException(ErrorCode.INVALID_ORDER_NUMBER);
             }
             if(placeBlock.getContent().isEmpty()) {
-                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+                throw new BusinessException(ErrorCode.CONTENT_IS_EMPTY);
             }
         });
         textBlocks.forEach(textBlock -> {
             if (!orderNumbers.add(textBlock.getOrderNumber())) {
-                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+                throw new BusinessException(ErrorCode.INVALID_ORDER_NUMBER);
             }
             if(textBlock.getContent().isEmpty()) {
-                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+                throw new BusinessException(ErrorCode.CONTENT_IS_EMPTY);
             }
         });
 
         int totalSize = placeBlocks.size() + textBlocks.size();
         for (short i = 1; i <= totalSize; i++) {
             if (!orderNumbers.contains(i)) {
-                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+                throw new BusinessException(ErrorCode.INVALID_ORDER_NUMBER);
             }
         }
     }
@@ -228,5 +234,19 @@ public class PostService {
         placeBlockImageIds.forEach(placeBlockImageId -> {
             if(!modifyPlaceBlockImageIds.contains(placeBlockImageId)) placeBlockImageRepository.delete(placeBlockImageId, deletedAt);
         });
+    }
+
+    private void countPostsToday(Long memberId) {
+        LocalDateTime twentyFourHoursAgo = LocalDateTime.now().minusHours(MAX_POSTS_INTERVAL_HOURS);
+        List<Post> findPosts = postRepository.countPostsToday(memberId, twentyFourHoursAgo);
+        if(findPosts.size() >= 3) {
+            throw new BusinessException(MAX_POSTS_PER_DAY);
+        }
+
+        if(!findPosts.isEmpty()) {
+            if(findPosts.get(0).getCreatedAt().plusMinutes(MIN_POSTS_INTERVAL_MINUTES).isAfter(LocalDateTime.now())) {
+                throw new BusinessException(TOO_FREQUENT_POST);
+            }
+        }
     }
 }

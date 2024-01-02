@@ -28,7 +28,7 @@ public class PostService {
 
     @Transactional
     public void addPost(Post post, Long memberId) {
-        checkBlockOrderNumber(post.getPlaceBlocks(), post.getTextBlocks());
+        checkBlockOrderNumberAndContentIsEmpty(post.getPlaceBlocks(), post.getTextBlocks());
 
         Optional<Member> findMember = memberRepository.findById(memberId);
         findMember.ifPresent(post::setMember);
@@ -74,7 +74,7 @@ public class PostService {
             throw new BusinessException(ErrorCode.NO_PERMISSION);
         }
 
-        checkBlockOrderNumber(modifyPost.getPlaceBlocks(), modifyPost.getTextBlocks());
+        checkBlockOrderNumberAndContentIsEmpty(modifyPost.getPlaceBlocks(), modifyPost.getTextBlocks());
         checkDeletedBlock(modifyPost.getPlaceBlocks(), modifyPost.getTextBlocks(), post.getPlaceBlocks(), post.getTextBlocks());
 
         postRepository.update(post.getId(), modifyPost.getTitle(), modifyPost.getVisitedAt());
@@ -169,16 +169,22 @@ public class PostService {
         });
     }
 
-    private void checkBlockOrderNumber(Set<PlaceBlock> placeBlocks, Set<TextBlock> textBlocks) {
+    private void checkBlockOrderNumberAndContentIsEmpty(Set<PlaceBlock> placeBlocks, Set<TextBlock> textBlocks) {
         Set<Short> orderNumbers = new HashSet<>();
 
         placeBlocks.forEach(placeBlock -> {
             if (!orderNumbers.add(placeBlock.getOrderNumber())) {
                 throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
             }
+            if(placeBlock.getContent().isEmpty()) {
+                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+            }
         });
         textBlocks.forEach(textBlock -> {
             if (!orderNumbers.add(textBlock.getOrderNumber())) {
+                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+            }
+            if(textBlock.getContent().isEmpty()) {
                 throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
             }
         });

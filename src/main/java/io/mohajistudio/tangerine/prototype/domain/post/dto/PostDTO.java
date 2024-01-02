@@ -51,11 +51,11 @@ public class PostDTO {
     public static class Compact extends PostDTO {
         @Schema(description = "Post Id", example = "1")
         private Long id;
-        @Schema(description = "댓글 개수", example = "0")
+        @Schema(description = "댓글 개수")
         private int commentCnt;
-        @Schema(description = "좋아요 개수", example = "0")
+        @Schema(description = "좋아요 개수")
         private int favoriteCnt;
-        @Schema(description = "블럭 개수", example = "0")
+        @Schema(description = "블럭 개수")
         private short blockCnt;
         @Schema(description = "작성자")
         private MemberDTO member;

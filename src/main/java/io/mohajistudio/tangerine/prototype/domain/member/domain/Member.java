@@ -68,10 +68,6 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private Set<FavoritePost> favoritePosts;
 
-    public static Member createMember(Provider provider, String email) {
-        return Member.builder().provider(provider).role(Role.MEMBER).email(email).build();
-    }
-
     public static Member createGuest(Provider provider, String email) {
         return Member.builder().provider(provider).role(Role.GUEST).email(email).build();
     }

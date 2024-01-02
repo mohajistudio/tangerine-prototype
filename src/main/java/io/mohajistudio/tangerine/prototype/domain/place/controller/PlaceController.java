@@ -4,7 +4,6 @@ import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceDTO;
 import io.mohajistudio.tangerine.prototype.domain.place.mapper.PlaceMapper;
 import io.mohajistudio.tangerine.prototype.domain.place.service.PlaceService;
-import io.mohajistudio.tangerine.prototype.domain.post.domain.Post;
 import io.mohajistudio.tangerine.prototype.global.common.PageableParam;
 import io.mohajistudio.tangerine.prototype.infra.place.dto.PlaceKakaoSearchApiDTO;
 import io.mohajistudio.tangerine.prototype.infra.place.dto.PlaceKakaoSearchApiResultDTO;
@@ -15,9 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/places")
@@ -48,4 +44,6 @@ public class PlaceController {
         Place place = placeService.addKakaoPlace(placeMapper.toEntity(placeKakaoSearchApiDTO));
         return placeMapper.toDetailsDTO(place);
     }
+
+
 }

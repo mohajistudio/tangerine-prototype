@@ -24,7 +24,7 @@ public class RegisterDTO {
 
     @NotNull
     @NotBlank
-    @Size(max = 10)
+    @Size(max = 20, min = 2)
     public String nickname;
 
     @Size(max = 255)

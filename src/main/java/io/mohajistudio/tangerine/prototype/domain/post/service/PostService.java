@@ -53,6 +53,7 @@ public class PostService {
                 placeBlockImageRepository.save(placeBlockImage);
                 if (placeBlock.getRepresentativePlaceBlockImageOrderNumber() == placeBlockImage.getOrderNumber()) {
                     placeBlock.setRepresentativePlaceBlockImageId(placeBlockImage.getId());
+                    placeBlockRepository.update(placeBlock.getId(), placeBlockImage.getId());
                 }
             });
             if(placeBlock.getRepresentativePlaceBlockImageId() == null) {
@@ -88,7 +89,7 @@ public class PostService {
         checkBlockOrderNumberAndContentIsEmpty(modifyPost.getPlaceBlocks(), modifyPost.getTextBlocks());
         checkDeletedBlock(modifyPost.getPlaceBlocks(), modifyPost.getTextBlocks(), post.getPlaceBlocks(), post.getTextBlocks());
 
-        postRepository.update(post.getId(), modifyPost.getTitle(), modifyPost.getVisitedAt());
+        postRepository.update(post.getId(), modifyPost.getTitle(), modifyPost.getVisitStartDate(), modifyPost.getVisitEndDate());
 
         modifyPost.getTextBlocks().forEach(textBlock -> modifyTextBlock(textBlock, post));
         modifyPost.getPlaceBlocks().forEach(placeBlock -> {

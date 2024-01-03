@@ -41,6 +41,10 @@ public class PostController {
     @PostMapping
     @Operation(summary = "게시글 추가", description = "게시글 형식에 맞게 데이터를 전달해주세요.")
     public void postAdd(@Valid @RequestBody PostDTO.Add postAddDTO) {
+        if(postAddDTO.getVisitStartDate().isAfter(postAddDTO.getVisitEndDate())) {
+            throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
 
@@ -59,6 +63,10 @@ public class PostController {
     @PatchMapping("/{id}")
     @Operation(summary = "게시글 수정", description = "게시글 형식에 맞게 데이터를 전달해주세요.")
     public void postModify(@PathVariable("id") Long id, @Valid @RequestBody PostDTO.Details postDetailsDTO) {
+        if(postDetailsDTO.getVisitStartDate().isAfter(postDetailsDTO.getVisitEndDate())) {
+            throw new BusinessException(ErrorCode.INVALID_DATE_RANGE);
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
 

@@ -29,7 +29,6 @@ public class PlaceBlock extends BaseEntity {
     private short rating;
 
     @Setter
-    @Column(nullable = false)
     private Long representativePlaceBlockImageId;
 
     @Transient

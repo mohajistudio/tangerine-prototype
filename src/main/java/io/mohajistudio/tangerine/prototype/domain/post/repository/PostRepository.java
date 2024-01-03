@@ -48,8 +48,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     void updateFavoriteCnt(@Param("id") Long id, @Param("favoriteCnt") int favoriteCnt);
 
     @Modifying(clearAutomatically = true)
-    @Query("update Post p set p.title = :title, p.visitedAt = :visitedAt where p.id = :id and p.deletedAt IS NULL")
-    void update(@Param("id") Long id, @Param("title") String title, @Param("visitedAt") LocalDate visitedAt);
+    @Query("update Post p set p.title = :title, p.visitStartDate = :visitStartDate, p.visitEndDate = :visitEndDate where p.id = :id and p.deletedAt IS NULL")
+    void update(@Param("id") Long id, @Param("title") String title, @Param("visitStartDate") LocalDate visitStartDate, @Param("visitEndDate") LocalDate visitEndDate);
 
     @Modifying(clearAutomatically = true)
     @Query("update Post p set p.deletedAt = :deletedAt where p.id = :id and p.deletedAt IS NULL")

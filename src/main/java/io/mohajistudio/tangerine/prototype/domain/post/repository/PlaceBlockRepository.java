@@ -17,6 +17,10 @@ public interface PlaceBlockRepository extends JpaRepository<PlaceBlock, Long> {
     void update(@Param("id") Long id, @Param("content") String content, @Param("orderNumber") short orderNumber, @Param("rating") short rating, @Param("category") Category category, @Param("place") Place place);
 
     @Modifying
+    @Query("UPDATE PlaceBlock pb SET pb.representativePlaceBlockImageId = :representativePlaceBlockImageId where pb.id = :id")
+    void update(@Param("id") Long id, @Param("representativePlaceBlockImageId") Long representativePlaceBlockImageId);
+
+    @Modifying
     @Query("update PlaceBlock pb set pb.deletedAt = :deletedAt where pb.id = :id")
     void delete(@Param("id") Long id, @Param("deletedAt") LocalDateTime deletedAt);
 

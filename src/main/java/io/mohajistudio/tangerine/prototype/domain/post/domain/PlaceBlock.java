@@ -29,6 +29,13 @@ public class PlaceBlock extends BaseEntity {
     private short rating;
 
     @Setter
+    @Column(nullable = false)
+    private Long representativePlaceBlockImageId;
+
+    @Transient
+    private short representativePlaceBlockImageOrderNumber;
+
+    @Setter
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Post post;

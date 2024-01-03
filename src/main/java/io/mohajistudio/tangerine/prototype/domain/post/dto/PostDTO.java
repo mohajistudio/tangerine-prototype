@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -38,9 +39,11 @@ public class PostDTO {
     @Schema(name = "PostDTO.Add", description = "게시글 추가를 위한 DTO")
     public static class Add extends PostDTO {
         @Valid
+        @NotNull
         @ArraySchema(arraySchema = @Schema(description = "텍스트 블럭"))
         private Set<TextBlockDTO.Add> textBlocks;
         @Valid
+        @NotNull
         @ArraySchema(arraySchema = @Schema(description = "장소 블럭"))
         private Set<PlaceBlockDTO.Add> placeBlocks;
     }

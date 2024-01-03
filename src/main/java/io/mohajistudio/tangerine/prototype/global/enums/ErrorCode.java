@@ -31,6 +31,7 @@ public enum ErrorCode {
     INVALID_ORDER_NUMBER(400, "P002", "잘못된 순서 번호입니다"),
     MAX_POSTS_PER_DAY(400, "P003", "하루에 작성 가능한 최대 게시글 개수에 도달했습니다"),
     TOO_FREQUENT_POST(400, "P004", "게시글을 작성한 지 얼마 지나지 않았으므로 잠시 후 작성해주세요"),
+    INVALID_REPRESENTATIVE_PLACE_BLOCK_IMAGE_ORDER_NUMBER(400, "P005", "잘못된 대표 순서 번호"),
 
 
     //Region

@@ -16,8 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static io.mohajistudio.tangerine.prototype.global.enums.ErrorCode.MAX_POSTS_PER_DAY;
-import static io.mohajistudio.tangerine.prototype.global.enums.ErrorCode.TOO_FREQUENT_POST;
+import static io.mohajistudio.tangerine.prototype.global.enums.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +51,13 @@ public class PostService {
             placeBlock.getPlaceBlockImages().forEach(placeBlockImage -> {
                 placeBlockImage.setPlaceBlock(placeBlock);
                 placeBlockImageRepository.save(placeBlockImage);
+                if (placeBlock.getRepresentativePlaceBlockImageOrderNumber() == placeBlockImage.getOrderNumber()) {
+                    placeBlock.setRepresentativePlaceBlockImageId(placeBlockImage.getId());
+                }
             });
+            if(placeBlock.getRepresentativePlaceBlockImageId() == null) {
+                throw new BusinessException(INVALID_REPRESENTATIVE_PLACE_BLOCK_IMAGE_ORDER_NUMBER);
+            }
         });
     }
 
@@ -88,9 +93,16 @@ public class PostService {
         modifyPost.getTextBlocks().forEach(textBlock -> modifyTextBlock(textBlock, post));
         modifyPost.getPlaceBlocks().forEach(placeBlock -> {
             modifyPlaceBlock(placeBlock, post);
-            placeBlock.getPlaceBlockImages().forEach(placeBlockImage ->
-                    modifyPlaceBlockImage(placeBlock, placeBlockImage)
+            placeBlock.getPlaceBlockImages().forEach(placeBlockImage -> {
+                        modifyPlaceBlockImage(placeBlock, placeBlockImage);
+                        if (placeBlock.getRepresentativePlaceBlockImageId() == null && placeBlock.getRepresentativePlaceBlockImageOrderNumber() == placeBlockImage.getOrderNumber()) {
+                            placeBlock.setRepresentativePlaceBlockImageId(placeBlockImage.getId());
+                        }
+                    }
             );
+            if(placeBlock.getRepresentativePlaceBlockImageId() == null) {
+                throw new BusinessException(INVALID_REPRESENTATIVE_PLACE_BLOCK_IMAGE_ORDER_NUMBER);
+            }
         });
     }
 
@@ -182,7 +194,7 @@ public class PostService {
             if (!orderNumbers.add(placeBlock.getOrderNumber())) {
                 throw new BusinessException(ErrorCode.INVALID_ORDER_NUMBER);
             }
-            if(placeBlock.getContent().isEmpty()) {
+            if (placeBlock.getContent().isEmpty()) {
                 throw new BusinessException(ErrorCode.CONTENT_IS_EMPTY);
             }
         });
@@ -190,7 +202,7 @@ public class PostService {
             if (!orderNumbers.add(textBlock.getOrderNumber())) {
                 throw new BusinessException(ErrorCode.INVALID_ORDER_NUMBER);
             }
-            if(textBlock.getContent().isEmpty()) {
+            if (textBlock.getContent().isEmpty()) {
                 throw new BusinessException(ErrorCode.CONTENT_IS_EMPTY);
             }
         });
@@ -232,19 +244,20 @@ public class PostService {
         });
 
         placeBlockImageIds.forEach(placeBlockImageId -> {
-            if(!modifyPlaceBlockImageIds.contains(placeBlockImageId)) placeBlockImageRepository.delete(placeBlockImageId, deletedAt);
+            if (!modifyPlaceBlockImageIds.contains(placeBlockImageId))
+                placeBlockImageRepository.delete(placeBlockImageId, deletedAt);
         });
     }
 
     private void countPostsToday(Long memberId) {
         LocalDateTime twentyFourHoursAgo = LocalDateTime.now().minusHours(MAX_POSTS_INTERVAL_HOURS);
         List<Post> findPosts = postRepository.countPostsToday(memberId, twentyFourHoursAgo);
-        if(findPosts.size() >= 3) {
+        if (findPosts.size() >= 3) {
             throw new BusinessException(MAX_POSTS_PER_DAY);
         }
 
-        if(!findPosts.isEmpty()) {
-            if(findPosts.get(0).getCreatedAt().plusMinutes(MIN_POSTS_INTERVAL_MINUTES).isAfter(LocalDateTime.now())) {
+        if (!findPosts.isEmpty()) {
+            if (findPosts.get(0).getCreatedAt().plusMinutes(MIN_POSTS_INTERVAL_MINUTES).isAfter(LocalDateTime.now())) {
                 throw new BusinessException(TOO_FREQUENT_POST);
             }
         }

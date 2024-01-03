@@ -28,7 +28,7 @@ public class MemberProfile extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private String thumbnail;
-    @Column(length = 20)
+    @Column(length = 20, unique = true)
     private String nickname;
 
     @JsonIgnore

@@ -40,6 +40,8 @@ public class AuthService {
             throw new BusinessException(ErrorCode.MEMBER_PROFILE_DUPLICATION);
         }
 
+        checkNicknameDuplicate(registerDTO.getNickname());
+
         memberRepository.updateRole(member.getId(), Role.MEMBER);
 
         MemberProfile memberProfile = MemberProfile.createMemberProfileFrom(registerDTO, member);
@@ -52,5 +54,12 @@ public class AuthService {
 
     public void logout(Long memberId) {
         memberRepository.updateRefreshToken(memberId, null);
+    }
+
+    public void checkNicknameDuplicate(String nickname) {
+        Optional<MemberProfile> findMemberProfile = memberProfileRepository.findByNickname(nickname);
+        if(findMemberProfile.isPresent()) {
+            throw new BusinessException(ErrorCode.NICKNAME_DUPLICATE);
+        }
     }
 }

@@ -7,6 +7,8 @@ import io.mohajistudio.tangerine.prototype.global.auth.domain.SecurityMember;
 import io.mohajistudio.tangerine.prototype.global.auth.service.AuthService;
 import io.mohajistudio.tangerine.prototype.global.auth.service.JwtProvider;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,5 +37,10 @@ public class AuthController {
     @PatchMapping("/tokens")
     public GeneratedToken tokenModify(@Valid @RequestBody TokenModifyRequest tokenModifyRequest) {
         return jwtProvider.reissueToken(tokenModifyRequest.getRefreshToken());
+    }
+
+    @GetMapping("/nickname-duplicate")
+    public void nicknameDuplicateCheck(@RequestParam("nickname") String nickname) {
+        authService.checkNicknameDuplicate(nickname);
     }
 }

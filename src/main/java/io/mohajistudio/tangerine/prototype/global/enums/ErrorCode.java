@@ -17,6 +17,7 @@ public enum ErrorCode {
     HTTP_MESSAGE_NOT_READABLE(400, "C009", "잘못된 JSON 요청 형식입니다"),
     ILLEGAL_ARGUMENT(400, "C010", "잘못된 인수 값이 포함된 요청입니다"),
     INVALID_DATE_RANGE(400, "C011", "시작 날짜는 도착 날짜보다 최근일 수 없습니다"),
+    NICKNAME_DUPLICATE(400, "C012", "이미 사용중인 닉네임입니다"),
 
     // Member
     MEMBER_NOT_FOUND(404, "M001", "존재하지 않는 회원입니다"),

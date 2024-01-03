@@ -27,7 +27,7 @@ public class PlaceBlockImageDTO {
     @Setter
     @Schema(name = "PlaceBlockImageDTO.Details", description = "장소 블럭 이미지의 상세를 반환할 때 사용할 DTO")
     public static class Details extends PlaceBlockImageDTO {
-        @Schema(description = "PlaceBlockImage Id")
+        @Schema(description = "PlaceBlockImage Id", example = "1")
         private Long id;
     }
 

@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -28,6 +29,7 @@ public class PlaceBlockDTO {
     @Setter
     @Schema(name = "PlaceBlockDTO.Details", description = "장소 블럭의 상세를 반환할 때 사용할 DTO")
     public static class Details extends PlaceBlockDTO {
+        @NotNull
         @Schema(description = "PlaceBlock Id", example = "1")
         private Long id;
         @Valid
@@ -35,16 +37,23 @@ public class PlaceBlockDTO {
         private CategoryDTO.Details category;
         @Valid
         @ArraySchema(arraySchema = @Schema(description = "장소 블럭 이미지"))
-        private Set<PlaceBlockImageDTO.Details> placeBlockImages;
+        private List<PlaceBlockImageDTO.Details> placeBlockImages;
         @Valid
         @Schema(description = "장소")
         private PlaceDTO.Details place;
+        @Schema(description = "Representative PlaceBlockImage Id", example = "1")
+        private Long representativePlaceBlockImageId;
+        @Schema(description = "대표 이미지 순서 번호", example = "1")
+        private Short representativePlaceBlockImageOrderNumber;
     }
 
     @Getter
     @Setter
     @Schema(name = "PlaceBlockDTO.Add", description = "장소 블럭을 추가할 때 사용할 DTO")
     public static class Add extends PlaceBlockDTO {
+        @NotNull
+        @Schema(description = "대표 이미지 순서 번호", example = "1")
+        private Short representativePlaceBlockImageOrderNumber;
         @Valid
         @NotNull
         @Schema(description = "카테고리")
@@ -52,7 +61,7 @@ public class PlaceBlockDTO {
         @Valid
         @NotNull
         @ArraySchema(arraySchema = @Schema(description = "장소 블럭 이미지"))
-        private Set<PlaceBlockImageDTO.Add> placeBlockImages;
+        private List<PlaceBlockImageDTO.Add> placeBlockImages;
         @Valid
         @NotNull
         @Schema(description = "장소")

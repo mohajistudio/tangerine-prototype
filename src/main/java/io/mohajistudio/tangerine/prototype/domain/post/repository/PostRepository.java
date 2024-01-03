@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -38,6 +39,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "join fetch m.memberProfile mp " +
             "where p.deletedAt IS NULL")
     Page<Post> findAll(Pageable pageable);
+
+    @Query("SELECT p FROM Post p WHERE p.member.id = :memberId AND p.createdAt >= :twentyFourHoursAgo ORDER BY p.createdAt DESC")
+    List<Post> countPostsToday(@Param("memberId") Long memberId, @Param("twentyFourHoursAgo") LocalDateTime twentyFourHoursAgo);
 
     @Modifying(clearAutomatically = true)
     @Query("update Post p set p.favoriteCnt = :favoriteCnt where p.id = :id and p.deletedAt IS NULL")

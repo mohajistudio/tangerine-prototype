@@ -1,9 +1,12 @@
 package io.mohajistudio.tangerine.prototype.domain.comment.service;
 
 import io.mohajistudio.tangerine.prototype.domain.comment.domain.Comment;
+import io.mohajistudio.tangerine.prototype.domain.comment.domain.FavoriteComment;
 import io.mohajistudio.tangerine.prototype.domain.comment.repository.CommentRepository;
+import io.mohajistudio.tangerine.prototype.domain.comment.repository.FavoriteCommentRepository;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberRepository;
+import io.mohajistudio.tangerine.prototype.domain.post.domain.FavoritePost;
 import io.mohajistudio.tangerine.prototype.domain.post.domain.Post;
 import io.mohajistudio.tangerine.prototype.domain.post.repository.PostRepository;
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
@@ -26,6 +29,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+    private final FavoriteCommentRepository favoriteCommentRepository;
 
     public void AddComment(Comment comment, Long postId, Long memberId) {
         Optional<Member> findMember = memberRepository.findById(memberId);
@@ -98,6 +102,36 @@ public class CommentService {
 
         if (!Objects.equals(comment.getPost().getId(), postId) || !Objects.equals(comment.getMember().getId(), memberId)) {
             throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+    }
+
+    public void modifyFavoriteComment(Long id, Long postId, Long memberId) {
+        Optional<Post> findPost = postRepository.findById(postId);
+        if (findPost.isEmpty()) {
+            throw new UrlNotFoundException();
+        }
+
+        Optional<Comment> findComment = commentRepository.findById(id);
+        if (findComment.isEmpty()) {
+            throw new UrlNotFoundException();
+        }
+
+        Comment comment = findComment.get();
+
+        if(!comment.getPost().getId().equals(postId)) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+
+        Optional<FavoriteComment> findFavoriteComment = favoriteCommentRepository.findByMemberIdAndPostId(memberId, id);
+        if (findFavoriteComment.isPresent()) {
+            FavoriteComment favoriteComment = findFavoriteComment.get();
+            favoriteCommentRepository.delete(favoriteComment);
+            commentRepository.updateFavoriteCnt(comment.getId(), comment.getFavoriteCnt() - 1);
+        } else {
+            Member member = Member.builder().id(memberId).build();
+            FavoriteComment favoriteComment = FavoriteComment.builder().member(member).comment(comment).build();
+            favoriteCommentRepository.save(favoriteComment);
+            postRepository.updateFavoriteCnt(comment.getId(), comment.getFavoriteCnt() + 1);
         }
     }
 }

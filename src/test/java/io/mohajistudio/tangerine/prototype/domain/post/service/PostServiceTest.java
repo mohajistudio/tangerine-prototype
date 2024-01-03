@@ -8,6 +8,7 @@ import io.mohajistudio.tangerine.prototype.domain.post.domain.*;
 import io.mohajistudio.tangerine.prototype.domain.post.repository.*;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import io.mohajistudio.tangerine.prototype.global.enums.ImageMimeType;
+import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -23,6 +25,7 @@ import java.util.*;
 @SpringBootTest
 @Slf4j
 @Transactional
+@ActiveProfiles("dev")
 class PostServiceTest {
     @Autowired
     private PostService postService;
@@ -109,7 +112,9 @@ class PostServiceTest {
 
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("id").ascending());
         for (int i = 0; i < times; i++) {
-            postService.addPost(createPost(), findMember.get().getId());
+            Post post = createPost();
+            post.setMember(findMember.get());
+            postRepository.save(post);
         }
 
         Page<Post> postListByPage = postService.findPostListByPage(pageRequest);
@@ -149,5 +154,15 @@ class PostServiceTest {
 
     @Test
     void deletePost() {
+    }
+
+    @Test
+    void countPostsToday() {
+        Optional<Member> findMember = memberRepository.findById(1L);
+        Member member = findMember.get();
+        Post post = createPost();
+        post.setMember(member);
+        postService.addPost(post, member.getId());
+        Assertions.assertThrows(BusinessException.class, () -> postService.addPost(post, member.getId()));
     }
 }

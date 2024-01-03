@@ -1,7 +1,6 @@
 package io.mohajistudio.tangerine.prototype.domain.post.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.mohajistudio.tangerine.prototype.global.serializer.PointJsonSerializer;
+import io.mohajistudio.tangerine.prototype.global.common.PointDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -22,8 +21,7 @@ public class PlaceDTO {
         @Schema(description = "장소명", example = "강남대학교")
         private String name;
         @Schema(description = "좌표")
-        @JsonSerialize(using = PointJsonSerializer.class)
-        private Point coordinates;
+        private PointDTO coordinates;
         @Schema(description = "썸네일", example = "https://thumbnail.com")
         private String thumbnail;
         @Schema(description = "구 주소(광역시, 도)", example = "경기도")
@@ -38,6 +36,12 @@ public class PlaceDTO {
         private String roadAddress;
         @Schema(description = "장소 설명", example = "개발팀이 재학중인 학교")
         private String description;
+
+        public void setCoordinates(Point coordinates) {
+            double lat = coordinates.getX();
+            double lng = coordinates.getY();
+            this.coordinates = PointDTO.builder().lat(lat).lng(lng).build();
+        }
     }
 
     @Getter

@@ -21,6 +21,7 @@ public enum ErrorCode {
     // Member
     MEMBER_NOT_FOUND(404, "M001", "존재하지 않는 회원입니다"),
     MEMBER_PROFILE_DUPLICATION(400, "M002", "이미 존재하는 회원입니다"),
+    SELF_FOLLOW(400, "M003", "자신을 팔로우 할 수 없습니다"),
 
 
     //TOKEN

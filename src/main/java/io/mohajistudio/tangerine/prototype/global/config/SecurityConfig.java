@@ -35,15 +35,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*", "/posts", "/posts/*", "/login/kakao", "/posts/*/comments").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/", "/members/*", "/posts", "/posts/*", "/login/kakao", "/posts/*/comments", "/members/*/follows", "/members/*/followMembers").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/swagger", "/swagger-ui/**", "/v3/api-docs/**").permitAll();
                     auth.requestMatchers(HttpMethod.PATCH, "/tokens").permitAll();
 
                     auth.requestMatchers(HttpMethod.POST, "/register").hasAuthority(AUTHORITY_GUEST);
 
-                    auth.requestMatchers(HttpMethod.GET,"/places", "/places/kakao").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.GET, "/places", "/places/kakao").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.requestMatchers(HttpMethod.POST, "/posts", "/places", "/posts/*/comments", "/places/kakao").hasAnyAuthority(AUTHORITY_MEMBER);
-                    auth.requestMatchers(HttpMethod.PATCH, "/logout", "/posts/*/favorites", "/posts/*", "/posts/*/comments/*").hasAnyAuthority(AUTHORITY_MEMBER);
+                    auth.requestMatchers(HttpMethod.PATCH, "/logout", "/posts/*/favorites", "/posts/*", "/posts/*/comments/*", "/members/*/follows").hasAnyAuthority(AUTHORITY_MEMBER);
                     auth.requestMatchers(HttpMethod.DELETE, "/posts/*", "/posts/*/comments/*").hasAnyAuthority(AUTHORITY_MEMBER);
                 }).csrf(AbstractHttpConfigurer::disable).sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth2Login -> {

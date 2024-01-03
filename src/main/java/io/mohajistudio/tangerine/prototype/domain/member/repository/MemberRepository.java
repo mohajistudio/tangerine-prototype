@@ -25,4 +25,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying
     @Query("UPDATE Member m SET m.role = :role WHERE m.id = :id")
     void updateRole(@Param("id") Long id, @Param("role") Role role);
+
+    @Modifying
+    @Query("UPDATE Member m SET m.followCount = :followCount WHERE m.id = :id")
+    void updateFollowCount(@Param("id") Long id, @Param("followCount") int followCount);
+
+    @Modifying
+    @Query("UPDATE Member m SET m.followMemberCount = :followMemberCount WHERE m.id = :id")
+    void updateFollowMemberCount(@Param("id") Long id, @Param("followMemberCount") int followMemberCount);
 }

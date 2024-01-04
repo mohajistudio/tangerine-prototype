@@ -1,7 +1,6 @@
 package io.mohajistudio.tangerine.prototype.domain.member.repository;
 
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Follow;
-import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

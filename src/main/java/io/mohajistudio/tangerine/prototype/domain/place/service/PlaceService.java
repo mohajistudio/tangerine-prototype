@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +32,7 @@ public class PlaceService {
         return placeRepository.findByName(query, pageable);
     }
 
-    public List<PlaceCategory> findCategoryList() {
+    public List<PlaceCategory> findPlaceCategoryList() {
         return placeCategoryRepository.findAll();
     }
 }

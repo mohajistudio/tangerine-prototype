@@ -46,7 +46,7 @@ public class PlaceBlock extends BaseEntity {
 
     @Setter
     @ManyToOne(optional = false)
-    private PlaceCategory category;
+    private PlaceCategory placeCategory;
 
     @OneToMany(mappedBy = "placeBlock", fetch = FetchType.EAGER)
     private Set<PlaceBlockImage> placeBlockImages;

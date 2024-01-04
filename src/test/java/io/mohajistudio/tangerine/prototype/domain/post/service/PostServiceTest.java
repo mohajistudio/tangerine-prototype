@@ -49,7 +49,7 @@ class PostServiceTest {
         placeBlockImages.add(PlaceBlockImage.builder().imageUrl("https://image-url-2-1.com").imageMimeType(ImageMimeType.JPEG).orderNumber((short) 1).build());
         placeBlockImages.add(PlaceBlockImage.builder().imageUrl("https://image-url-2-2.com").imageMimeType(ImageMimeType.PNG).orderNumber((short) 1).build());
 
-        placeBlocks.add(PlaceBlock.builder().content("두 번째 블럭에 들어갈 내용입니다.").orderNumber((short) 2).category(category).place(place).placeBlockImages(placeBlockImages).build());
+        placeBlocks.add(PlaceBlock.builder().content("두 번째 블럭에 들어갈 내용입니다.").orderNumber((short) 2).placeCategory(category).place(place).placeBlockImages(placeBlockImages).build());
 
         post.setTextBlocks(textBlocks);
         post.setPlaceBlocks(placeBlocks);

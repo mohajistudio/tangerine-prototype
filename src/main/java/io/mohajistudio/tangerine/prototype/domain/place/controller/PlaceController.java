@@ -51,7 +51,7 @@ public class PlaceController {
     }
 
     @GetMapping("/categories")
-    public List<PlaceCategoryDTO> categoryList() {
-        return placeService.findCategoryList().stream().map(placeCategoryMapper::toDTO).toList();
+    public List<PlaceCategoryDTO> placeCategoryList() {
+        return placeService.findPlaceCategoryList().stream().map(placeCategoryMapper::toDTO).toList();
     }
 }

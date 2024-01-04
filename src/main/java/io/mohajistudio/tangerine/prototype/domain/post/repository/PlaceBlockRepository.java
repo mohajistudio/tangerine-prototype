@@ -13,8 +13,8 @@ import java.util.Optional;
 
 public interface PlaceBlockRepository extends JpaRepository<PlaceBlock, Long> {
     @Modifying
-    @Query("update PlaceBlock pb set pb.content = :content, pb.orderNumber = :orderNumber, pb.rating = :rating, pb.category = :category, pb.place = :place where pb.id = :id")
-    void update(@Param("id") Long id, @Param("content") String content, @Param("orderNumber") short orderNumber, @Param("rating") short rating, @Param("category") PlaceCategory category, @Param("place") Place place);
+    @Query("update PlaceBlock pb set pb.content = :content, pb.orderNumber = :orderNumber, pb.rating = :rating, pb.placeCategory = :placeCategory, pb.place = :place where pb.id = :id")
+    void update(@Param("id") Long id, @Param("content") String content, @Param("orderNumber") short orderNumber, @Param("rating") short rating, @Param("placeCategory") PlaceCategory placeCategory, @Param("place") Place place);
 
     @Modifying
     @Query("UPDATE PlaceBlock pb SET pb.representativePlaceBlockImageId = :representativePlaceBlockImageId where pb.id = :id")
@@ -26,7 +26,7 @@ public interface PlaceBlockRepository extends JpaRepository<PlaceBlock, Long> {
 
     @Override
     @Query("select pb from PlaceBlock pb " +
-            "left join fetch pb.category " +
+            "left join fetch pb.placeCategory " +
             "left join fetch pb.place " +
             "left join fetch pb.placeBlockImages " +
             "where pb.id = :id")

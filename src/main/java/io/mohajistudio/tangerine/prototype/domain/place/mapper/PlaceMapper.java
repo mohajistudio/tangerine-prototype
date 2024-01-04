@@ -2,7 +2,6 @@ package io.mohajistudio.tangerine.prototype.domain.place.mapper;
 
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceDTO;
-import io.mohajistudio.tangerine.prototype.global.common.PointDTO;
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;
 import io.mohajistudio.tangerine.prototype.global.error.exception.BusinessException;
 import io.mohajistudio.tangerine.prototype.infra.place.dto.PlaceKakaoSearchApiDTO;

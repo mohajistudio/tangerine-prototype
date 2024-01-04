@@ -20,6 +20,6 @@ public class PlaceCategory extends BaseEntity {
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "placeCategory")
     private List<PlaceBlock> placeBlocks;
 }

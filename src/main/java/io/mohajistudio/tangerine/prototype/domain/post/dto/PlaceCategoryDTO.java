@@ -9,18 +9,18 @@ import lombok.Setter;
 @Setter
 public class PlaceCategoryDTO {
     @NotNull
-    @Schema(description = "Category Id", example = "1")
+    @Schema(description = "PlaceCategory Id", example = "1")
     private Long id;
 
     @Getter
     @Setter
-    @Schema(name = "CategoryDTO.Details", description = "장소 블럭의 상세를 반환할 때 사용할 DTO")
+    @Schema(name = "PlaceCategoryDTO.Details", description = "장소 블럭의 상세를 반환할 때 사용할 DTO")
     public static class Details extends PlaceCategoryDTO {
         private String name;
     }
 
     @Getter
-    @Schema(name = "CategoryDTO.Add", description = "장소 블럭을 추가할 때 사용할 DTO")
+    @Schema(name = "PlaceCategoryDTO.Add", description = "장소 블럭을 추가할 때 사용할 DTO")
     public static class Add extends PlaceCategoryDTO {
     }
 }

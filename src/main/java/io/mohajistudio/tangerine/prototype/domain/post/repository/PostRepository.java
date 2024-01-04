@@ -24,7 +24,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "left join fetch p.textBlocks tb " +
             "left join fetch p.placeBlocks pb " +
             "left join fetch pb.placeBlockImages pbi " +
-            "left join fetch pb.category c " +
+            "left join fetch pb.placeCategory c " +
             "left join fetch pb.place pl " +
             "where p.id = :id " +
             "and p.deletedAt IS NULL " +

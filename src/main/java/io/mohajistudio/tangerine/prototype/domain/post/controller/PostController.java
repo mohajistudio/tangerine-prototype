@@ -94,4 +94,12 @@ public class PostController {
 
         postService.modifyFavoritePost(id, securityMember.getId());
     }
+
+    @PatchMapping("/{id}/scrap")
+    public void scrapPostModify(@PathVariable("id") Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityMember securityMember = (SecurityMember) authentication.getPrincipal();
+
+        postService.modifyScrapPost(id, securityMember.getId());
+    }
 }

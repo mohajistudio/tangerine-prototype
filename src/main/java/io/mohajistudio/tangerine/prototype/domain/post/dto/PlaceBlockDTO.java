@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -34,7 +33,7 @@ public class PlaceBlockDTO {
         private Long id;
         @Valid
         @Schema(description = "카테고리")
-        private CategoryDTO.Details category;
+        private PlaceCategoryDTO.Details placeCategory;
         @Valid
         @ArraySchema(arraySchema = @Schema(description = "장소 블럭 이미지"))
         private List<PlaceBlockImageDTO.Details> placeBlockImages;
@@ -57,7 +56,7 @@ public class PlaceBlockDTO {
         @Valid
         @NotNull
         @Schema(description = "카테고리")
-        private CategoryDTO.Add category;
+        private PlaceCategoryDTO.Add placeCategory;
         @Valid
         @NotNull
         @ArraySchema(arraySchema = @Schema(description = "장소 블럭 이미지"))

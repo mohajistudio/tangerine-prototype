@@ -1,7 +1,7 @@
 package io.mohajistudio.tangerine.prototype.domain.post.repository;
 
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
-import io.mohajistudio.tangerine.prototype.domain.post.domain.Category;
+import io.mohajistudio.tangerine.prototype.domain.place.domain.PlaceCategory;
 import io.mohajistudio.tangerine.prototype.domain.post.domain.PlaceBlock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface PlaceBlockRepository extends JpaRepository<PlaceBlock, Long> {
     @Modifying
     @Query("update PlaceBlock pb set pb.content = :content, pb.orderNumber = :orderNumber, pb.rating = :rating, pb.category = :category, pb.place = :place where pb.id = :id")
-    void update(@Param("id") Long id, @Param("content") String content, @Param("orderNumber") short orderNumber, @Param("rating") short rating, @Param("category") Category category, @Param("place") Place place);
+    void update(@Param("id") Long id, @Param("content") String content, @Param("orderNumber") short orderNumber, @Param("rating") short rating, @Param("category") PlaceCategory category, @Param("place") Place place);
 
     @Modifying
     @Query("UPDATE PlaceBlock pb SET pb.representativePlaceBlockImageId = :representativePlaceBlockImageId where pb.id = :id")

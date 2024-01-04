@@ -1,6 +1,7 @@
 package io.mohajistudio.tangerine.prototype.domain.post.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.mohajistudio.tangerine.prototype.domain.place.domain.PlaceCategory;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import jakarta.persistence.*;
@@ -45,7 +46,7 @@ public class PlaceBlock extends BaseEntity {
 
     @Setter
     @ManyToOne(optional = false)
-    private Category category;
+    private PlaceCategory category;
 
     @OneToMany(mappedBy = "placeBlock", fetch = FetchType.EAGER)
     private Set<PlaceBlockImage> placeBlockImages;

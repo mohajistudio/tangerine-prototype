@@ -1,7 +1,9 @@
 package io.mohajistudio.tangerine.prototype.domain.place.controller;
 
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
+import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceCategoryDTO;
 import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceDTO;
+import io.mohajistudio.tangerine.prototype.domain.place.mapper.PlaceCategoryMapper;
 import io.mohajistudio.tangerine.prototype.domain.place.mapper.PlaceMapper;
 import io.mohajistudio.tangerine.prototype.domain.place.service.PlaceService;
 import io.mohajistudio.tangerine.prototype.global.common.PageableParam;
@@ -15,12 +17,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/places")
 @RequiredArgsConstructor
 public class PlaceController {
     private final PlaceService placeService;
     private final PlaceMapper placeMapper;
+    private final PlaceCategoryMapper placeCategoryMapper;
     private final PlaceApiService placeApiService;
 
     @GetMapping
@@ -45,5 +50,8 @@ public class PlaceController {
         return placeMapper.toDetailsDTO(place);
     }
 
-
+    @GetMapping("/categories")
+    public List<PlaceCategoryDTO> categoryList() {
+        return placeService.findCategoryList().stream().map(placeCategoryMapper::toDTO).toList();
+    }
 }

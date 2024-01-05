@@ -5,11 +5,12 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -17,10 +18,16 @@ import java.util.Set;
 public class PostDTO {
     @NotNull
     @Schema(description = "게시글의 제목", example = "테스트 제목")
+    @Length(min = 5, max = 100)
     private String title;
     @NotNull
-    @Schema(description = "방문 날짜")
-    private LocalDate visitedAt;
+    @Past
+    @Schema(description = "여행 시작 날짜")
+    private LocalDate visitStartDate;
+    @NotNull
+    @Past
+    @Schema(description = "여행 도착 날짜")
+    private LocalDate visitEndDate;
 
     @Getter
     @Setter

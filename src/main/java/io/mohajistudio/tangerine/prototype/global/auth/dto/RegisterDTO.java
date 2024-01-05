@@ -12,21 +12,21 @@ import java.time.LocalDate;
 public class RegisterDTO {
     @NotNull
     @Past
-    public LocalDate birthday;
+    private LocalDate birthday;
 
     @NotNull
-    public Gender gender;
+    private Gender gender;
 
     @NotNull
     @NotBlank
     @Size(min = 9, max = 15)
-    public String phone;
+    private String phone;
 
     @NotNull
     @NotBlank
-    @Size(max = 10)
-    public String nickname;
+    @Size(max = 20, min = 2)
+    private String nickname;
 
     @Size(max = 255)
-    public String thumbnail;
+    private String thumbnail;
 }

@@ -27,6 +27,8 @@ public class PostService {
     private final TextBlockRepository textBlockRepository;
     private final PlaceBlockRepository placeBlockRepository;
     private final PlaceBlockImageRepository placeBlockImageRepository;
+    private final ScrapPostRepository scrapPostRepository;
+
     private static final int MIN_POSTS_INTERVAL_MINUTES = 10;
     private static final int MAX_POSTS_INTERVAL_HOURS = 24;
 
@@ -53,9 +55,10 @@ public class PostService {
                 placeBlockImageRepository.save(placeBlockImage);
                 if (placeBlock.getRepresentativePlaceBlockImageOrderNumber() == placeBlockImage.getOrderNumber()) {
                     placeBlock.setRepresentativePlaceBlockImageId(placeBlockImage.getId());
+                    placeBlockRepository.update(placeBlock.getId(), placeBlockImage.getId());
                 }
             });
-            if(placeBlock.getRepresentativePlaceBlockImageId() == null) {
+            if (placeBlock.getRepresentativePlaceBlockImageId() == null) {
                 throw new BusinessException(INVALID_REPRESENTATIVE_PLACE_BLOCK_IMAGE_ORDER_NUMBER);
             }
         });
@@ -88,7 +91,7 @@ public class PostService {
         checkBlockOrderNumberAndContentIsEmpty(modifyPost.getPlaceBlocks(), modifyPost.getTextBlocks());
         checkDeletedBlock(modifyPost.getPlaceBlocks(), modifyPost.getTextBlocks(), post.getPlaceBlocks(), post.getTextBlocks());
 
-        postRepository.update(post.getId(), modifyPost.getTitle(), modifyPost.getVisitedAt());
+        postRepository.update(post.getId(), modifyPost.getTitle(), modifyPost.getVisitStartDate(), modifyPost.getVisitEndDate());
 
         modifyPost.getTextBlocks().forEach(textBlock -> modifyTextBlock(textBlock, post));
         modifyPost.getPlaceBlocks().forEach(placeBlock -> {
@@ -100,7 +103,7 @@ public class PostService {
                         }
                     }
             );
-            if(placeBlock.getRepresentativePlaceBlockImageId() == null) {
+            if (placeBlock.getRepresentativePlaceBlockImageId() == null) {
                 throw new BusinessException(INVALID_REPRESENTATIVE_PLACE_BLOCK_IMAGE_ORDER_NUMBER);
             }
         });
@@ -115,7 +118,7 @@ public class PostService {
             if (findPlaceBlock.isEmpty()) {
                 throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
             }
-            placeBlockRepository.update(findPlaceBlock.get().getId(), placeBlock.getContent(), placeBlock.getOrderNumber(), placeBlock.getRating(), placeBlock.getCategory(), placeBlock.getPlace());
+            placeBlockRepository.update(findPlaceBlock.get().getId(), placeBlock.getContent(), placeBlock.getOrderNumber(), placeBlock.getRating(), placeBlock.getPlaceCategory(), placeBlock.getPlace());
         }
     }
 
@@ -260,6 +263,22 @@ public class PostService {
             if (findPosts.get(0).getCreatedAt().plusMinutes(MIN_POSTS_INTERVAL_MINUTES).isAfter(LocalDateTime.now())) {
                 throw new BusinessException(TOO_FREQUENT_POST);
             }
+        }
+    }
+
+    public void modifyScrapPost(Long id, Long memberId) {
+        Optional<Post> findPost = postRepository.findById(id);
+        if (findPost.isEmpty()) throw new UrlNotFoundException();
+        Post post = findPost.get();
+
+        Optional<ScrapPost> findScrapPost = scrapPostRepository.findByMemberIdAndPostId(memberId, id);
+        if (findScrapPost.isPresent()) {
+            ScrapPost scrapPost = findScrapPost.get();
+            scrapPostRepository.delete(scrapPost);
+        } else {
+            Member member = Member.builder().id(memberId).build();
+            ScrapPost favoritePost = ScrapPost.builder().member(member).post(post).build();
+            scrapPostRepository.save(favoritePost);
         }
     }
 }

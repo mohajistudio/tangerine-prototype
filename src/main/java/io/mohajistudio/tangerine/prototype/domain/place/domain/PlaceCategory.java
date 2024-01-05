@@ -1,12 +1,9 @@
-package io.mohajistudio.tangerine.prototype.domain.post.domain;
+package io.mohajistudio.tangerine.prototype.domain.place.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.mohajistudio.tangerine.prototype.domain.post.domain.PlaceBlock;
 import io.mohajistudio.tangerine.prototype.global.common.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -17,12 +14,12 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "category")
-public class Category extends BaseEntity {
+@Table(name = "place_category")
+public class PlaceCategory extends BaseEntity {
     @Column(nullable = false, length = 20)
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "placeCategory")
     private List<PlaceBlock> placeBlocks;
 }

@@ -36,4 +36,9 @@ public class AuthController {
     public GeneratedToken tokenModify(@Valid @RequestBody TokenModifyRequest tokenModifyRequest) {
         return jwtProvider.reissueToken(tokenModifyRequest.getRefreshToken());
     }
+
+    @GetMapping("/nickname-duplicate")
+    public void nicknameDuplicateCheck(@RequestParam("nickname") String nickname) {
+        authService.checkNicknameDuplicate(nickname);
+    }
 }

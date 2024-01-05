@@ -6,7 +6,6 @@ import io.mohajistudio.tangerine.prototype.domain.comment.repository.CommentRepo
 import io.mohajistudio.tangerine.prototype.domain.comment.repository.FavoriteCommentRepository;
 import io.mohajistudio.tangerine.prototype.domain.member.domain.Member;
 import io.mohajistudio.tangerine.prototype.domain.member.repository.MemberRepository;
-import io.mohajistudio.tangerine.prototype.domain.post.domain.FavoritePost;
 import io.mohajistudio.tangerine.prototype.domain.post.domain.Post;
 import io.mohajistudio.tangerine.prototype.domain.post.repository.PostRepository;
 import io.mohajistudio.tangerine.prototype.global.enums.ErrorCode;

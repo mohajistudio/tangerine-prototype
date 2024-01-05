@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface MemberProfileRepository extends JpaRepository<MemberProfile, Long> {
     @Query("SELECT mp FROM MemberProfile mp WHERE mp.member.id = :memberId")
     Optional<MemberProfile> findByMemberId(@Param("memberId") Long memberId);
+
+    @Query("SELECT mp FROM MemberProfile mp WHERE mp.nickname = :nickname")
+    Optional<MemberProfile> findByNickname(@Param("nickname") String nickname);
 }

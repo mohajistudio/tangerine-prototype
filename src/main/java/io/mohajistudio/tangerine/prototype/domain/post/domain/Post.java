@@ -22,7 +22,9 @@ public class Post extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    private LocalDate visitedAt;
+    private LocalDate visitStartDate;
+    @Column(nullable = false)
+    private LocalDate visitEndDate;
 
     @Column(nullable = false)
     private int commentCnt = 0;

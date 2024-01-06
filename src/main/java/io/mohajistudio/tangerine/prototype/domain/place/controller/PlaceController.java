@@ -3,10 +3,12 @@ package io.mohajistudio.tangerine.prototype.domain.place.controller;
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceCategoryDTO;
 import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceDTO;
+import io.mohajistudio.tangerine.prototype.domain.place.dto.Region;
 import io.mohajistudio.tangerine.prototype.domain.place.mapper.PlaceCategoryMapper;
 import io.mohajistudio.tangerine.prototype.domain.place.mapper.PlaceMapper;
 import io.mohajistudio.tangerine.prototype.domain.place.service.PlaceService;
 import io.mohajistudio.tangerine.prototype.global.common.PageableParam;
+import io.mohajistudio.tangerine.prototype.infra.place.dto.AddressDTO;
 import io.mohajistudio.tangerine.prototype.infra.place.dto.PlaceKakaoSearchApiDTO;
 import io.mohajistudio.tangerine.prototype.infra.place.dto.PlaceKakaoSearchApiResultDTO;
 import io.mohajistudio.tangerine.prototype.infra.place.service.PlaceApiService;
@@ -27,6 +29,7 @@ public class PlaceController {
     private final PlaceMapper placeMapper;
     private final PlaceCategoryMapper placeCategoryMapper;
     private final PlaceApiService placeApiService;
+    private final RepresentativePlaceGeneratorInterface representativePlaceGeneratorInterface;
 
     @GetMapping
     public Page<PlaceDTO.Details> placeListByPage(@RequestParam("query") String query, @ModelAttribute PageableParam pageableParam) {
@@ -53,5 +56,12 @@ public class PlaceController {
     @GetMapping("/categories")
     public List<PlaceCategoryDTO> placeCategoryList() {
         return placeService.findPlaceCategoryList().stream().map(placeCategoryMapper::toDTO).toList();
+    }
+
+    @PostMapping("/recommend")
+    public Region recommendRegion(@Valid @RequestBody List<AddressDTO> places){
+        Region regions = new Region();
+        regions.setRegions(representativePlaceGeneratorInterface.generate(places));
+        return regions;
     }
 }

@@ -14,6 +14,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Table(name = "place_block_image")
 public class PlaceBlockImage extends BaseEntity {
+
+
     @Column(nullable = false)
     private String imageUrl;
 
@@ -31,5 +33,9 @@ public class PlaceBlockImage extends BaseEntity {
 
     public void setImageMimeType(String imageMimeType) {
         this.imageMimeType = ImageMimeType.fromValue(imageMimeType);
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

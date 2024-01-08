@@ -3,8 +3,10 @@ package io.mohajistudio.tangerine.prototype.infra.s3.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
-import io.mohajistudio.tangerine.prototype.infra.s3.dto.S3UploadRequestDTO;
-import io.mohajistudio.tangerine.prototype.infra.s3.dto.S3UploadResponseDTO;
+
+import io.mohajistudio.tangerine.prototype.domain.post.domain.PlaceBlockImage;
+import io.mohajistudio.tangerine.prototype.domain.post.dto.PlaceBlockImageDTO;
+import io.mohajistudio.tangerine.prototype.domain.post.repository.PlaceBlockImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,10 +22,9 @@ public class S3UploadService {
 
     private final AmazonS3Client amazonS3Client;
     private final String bucket;
+    private final PlaceBlockImageRepository placeBlockImageRepository;
 
-    public S3UploadResponseDTO uploadImageToS3(MultipartFile multipartFile) {
-//        public S3UploadResponseDTO uploadImageToS3
-//    }(MultipartFile multipartFile, S3UploadRequestDTO s3UploadRequestDTO) {
+    public PlaceBlockImageDTO uploadImageToS3(MultipartFile multipartFile) {
         try {
             if (multipartFile == null) {
                 throw new IllegalArgumentException("MultipartFile is null");
@@ -32,23 +33,37 @@ public class S3UploadService {
             String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
             String changedName = changedImageName(ext);
 
-//            Long placeBlockId = s3UploadRequestDTO.getId();
-
             ObjectMetadata metadata = getObjectMetadata(multipartFile);
 
             PutObjectResult putObjectResult = amazonS3Client.putObject(bucket, changedName, multipartFile.getInputStream(), metadata);
             String uploadFileUrl = amazonS3Client.getUrl(bucket, changedName).toString();
 
-            S3UploadResponseDTO s3UploadResponseDTO = S3UploadResponseDTO.builder()
-                    .S3UploadImageUrl(uploadFileUrl)
-                    .S3UploadImageName(originalFileName)
-                    .build();
+            PlaceBlockImageDTO placeBlockImageDTO = getPlaceBlockImageDTO(uploadFileUrl, ext);
 
-            return s3UploadResponseDTO;
+            savedPlaceBlockImage(placeBlockImageDTO);
+
+            log.info("breakpoint");
+
+            return placeBlockImageDTO;
 
         } catch (IOException e) {
             throw new RuntimeException("Error uploading image to S3.", e);
         }
+    }
+
+    private void savedPlaceBlockImage(PlaceBlockImageDTO placeBlockImageDTO) {
+        PlaceBlockImage placeBlockImage = new PlaceBlockImage();
+        placeBlockImage.setImageMimeType(String.valueOf(placeBlockImageDTO.getImageMimeType()));
+        placeBlockImage.setImageUrl(placeBlockImageDTO.getImageUrl());
+
+        PlaceBlockImage savedPlaceBlockImage = placeBlockImageRepository.save(placeBlockImage);
+    }
+
+    private static PlaceBlockImageDTO getPlaceBlockImageDTO(String uploadFileUrl, String ext) {
+        PlaceBlockImageDTO placeBlockImageDTO = new PlaceBlockImageDTO();
+        placeBlockImageDTO.setImageUrl(uploadFileUrl);
+        placeBlockImageDTO.setImageMimeType(ext);
+        return placeBlockImageDTO;
     }
 
     private static ObjectMetadata getObjectMetadata(MultipartFile multipartFile) {

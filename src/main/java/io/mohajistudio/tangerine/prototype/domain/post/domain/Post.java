@@ -35,7 +35,7 @@ public class Post extends BaseEntity {
     private short blockCnt = 0;
 
     //대표장소
-    private  String representativePlace;
+    private  String representativeRegion;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

@@ -14,6 +14,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Table(name = "place_block_image")
 public class PlaceBlockImage extends BaseEntity {
+
+
     @Column(nullable = false)
     private String imageUrl;
 

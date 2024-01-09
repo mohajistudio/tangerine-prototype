@@ -29,4 +29,8 @@ public class RegisterDTO {
 
     @Size(max = 255)
     private String thumbnail;
+    @NotNull
+    @NotBlank
+    @Size(max = 20, min = 2)
+    private String name;
 }

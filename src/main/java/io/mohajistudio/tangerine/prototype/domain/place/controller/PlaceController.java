@@ -3,7 +3,7 @@ package io.mohajistudio.tangerine.prototype.domain.place.controller;
 import io.mohajistudio.tangerine.prototype.domain.place.domain.Place;
 import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceCategoryDTO;
 import io.mohajistudio.tangerine.prototype.domain.place.dto.PlaceDTO;
-import io.mohajistudio.tangerine.prototype.domain.place.dto.Region;
+import io.mohajistudio.tangerine.prototype.domain.place.dto.RepresentativeRegionDTO;
 import io.mohajistudio.tangerine.prototype.domain.place.mapper.PlaceCategoryMapper;
 import io.mohajistudio.tangerine.prototype.domain.place.mapper.PlaceMapper;
 import io.mohajistudio.tangerine.prototype.domain.place.service.PlaceService;
@@ -29,7 +29,7 @@ public class PlaceController {
     private final PlaceMapper placeMapper;
     private final PlaceCategoryMapper placeCategoryMapper;
     private final PlaceApiService placeApiService;
-    private final RepresentativePlaceGeneratorInterface representativePlaceGeneratorInterface;
+    private final RepresentService representService;
 
     @GetMapping
     public Page<PlaceDTO.Details> placeListByPage(@RequestParam("query") String query, @ModelAttribute PageableParam pageableParam) {
@@ -59,9 +59,9 @@ public class PlaceController {
     }
 
     @PostMapping("/recommend")
-    public Region recommendRegion(@Valid @RequestBody List<AddressDTO> places){
-        Region regions = new Region();
-        regions.setRegions(representativePlaceGeneratorInterface.generate(places));
+    public RepresentativeRegionDTO recommendRegion(@Valid @RequestBody List<AddressDTO> places){
+        RepresentativeRegionDTO regions = new RepresentativeRegionDTO();
+        regions.setRegions(representService.extract(places));
         return regions;
     }
 }

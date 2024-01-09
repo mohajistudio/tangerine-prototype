@@ -1,23 +1,21 @@
-package io.mohajistudio.tangerine.prototype.infra.place.generator;
+package io.mohajistudio.tangerine.prototype.infra.place.service;
 
 
-import io.mohajistudio.tangerine.prototype.domain.place.controller.RepresentativePlaceGeneratorInterface;
+import io.mohajistudio.tangerine.prototype.domain.place.controller.RepresentService;
 import io.mohajistudio.tangerine.prototype.infra.place.dto.AddressDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Component
 @Slf4j
-public class RepresentativePlaceGenerator implements RepresentativePlaceGeneratorInterface {
+public class RepresentServiceImpl implements RepresentService {
     //post에서 수정, 저장 로직 만들때 대표지역을 설정하기 위해 사용
     //post 수정, 저장 만들때 같은 지역 입력받으면 400에러 보내도록 예외처리 요망
     //인프라에 넣어놓긴 했는데 매개변수를 수정해서 place로 옮길 여지 있음(실질적으로 수정,삭제는 도메인에서 이루어지기 때문)
-    public List<String> generate(List<AddressDTO> places) {
+    public List<String> extract(List<AddressDTO> places) {
         List<String> result = new ArrayList<>();
         result.add("전국");
         if (places.size() == 1) {
@@ -27,7 +25,7 @@ public class RepresentativePlaceGenerator implements RepresentativePlaceGenerato
         Map<String, Integer> provinces = new HashMap<>();
         Map<String, Integer> cities = new HashMap<>();
         Map<String, Integer> districts = new HashMap<>();
-        generateForPlace(places, provinces, cities, districts);
+        extractForPlace(places, provinces, cities, districts);
 
         result.addAll(findKeysInOrder(districts, cities, provinces));
 
@@ -36,7 +34,7 @@ public class RepresentativePlaceGenerator implements RepresentativePlaceGenerato
 
 
 
-    private static void generateForPlace(List<AddressDTO> places, Map<String, Integer> provinces, Map<String, Integer> cities, Map<String, Integer> districts) {
+    private static void extractForPlace(List<AddressDTO> places, Map<String, Integer> provinces, Map<String, Integer> cities, Map<String, Integer> districts) {
         for (AddressDTO place : places) {
             //key value로 저장//동일한 키 존재시 value1 증가
             String ProvinceKey = place.getProvince() ;

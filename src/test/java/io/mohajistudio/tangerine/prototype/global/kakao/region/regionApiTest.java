@@ -3,7 +3,7 @@ package io.mohajistudio.tangerine.prototype.global.kakao.region;
 
 import io.mohajistudio.tangerine.prototype.infra.place.dto.AddressDTO;
 import io.mohajistudio.tangerine.prototype.infra.place.dto.PlaceKakaoSearchApiResultDTO;
-import io.mohajistudio.tangerine.prototype.infra.place.generator.RepresentativePlaceGenerator;
+import io.mohajistudio.tangerine.prototype.infra.place.service.RepresentServiceImpl;
 import io.mohajistudio.tangerine.prototype.infra.place.service.PlaceApiService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class regionApiTest {
     @Autowired
     private PlaceApiService placeApiService;
     @Autowired
-    private RepresentativePlaceGenerator RRG;
+    private RepresentServiceImpl RRG;
 
     @AfterEach
     void afterEach() {
@@ -65,7 +65,7 @@ class regionApiTest {
         places.add(AddressDTO.builder().province("서울").city("용산구").district("동자동").detail("43-205").build());
         places.add(AddressDTO.builder().province("부산").city("동구").district("초량동").detail("1187-1").build());
         places.add(AddressDTO.builder().province("경기").city("용인시").district("기흥구").detail("상갈동 496").build());
-        List<String> RepresentativeRegion = RRG.generate(places);
+        List<String> RepresentativeRegion = RRG.extract(places);
         System.out.println("대표지역 = " + RepresentativeRegion);
         List<String> expectedList = Arrays.asList("전국","서울");
         assertArrayEquals(expectedList.toArray(), RepresentativeRegion.toArray());
@@ -79,7 +79,7 @@ class regionApiTest {
         places.add(AddressDTO.builder().province("경기").city("광명시").district("일직동").detail("276-8").build());
         places.add(AddressDTO.builder().province("경기").city("광명시").district("광명동").detail("158-211").build());
 
-        List<String> RepresentativeRegion = RRG.generate(places);
+        List<String> RepresentativeRegion = RRG.extract(places);
         System.out.println("대표지역 = " + RepresentativeRegion);
         List<String>  expectedList = Arrays.asList("전국","경기","광명시");
         assertArrayEquals(expectedList.toArray(), RepresentativeRegion.toArray());
@@ -92,7 +92,7 @@ class regionApiTest {
         places.add(AddressDTO.builder().province("인천").city("연수구").district("송도동").detail("9-1").build());
         places.add(AddressDTO.builder().province("인천").city("연수구").district("송도동").detail("806-12").build());
         places.add(AddressDTO.builder().province("인천").city("연수구").district("송도동").detail("5-1").build());
-        List<String> RepresentativeRegion = RRG.generate(places);
+        List<String> RepresentativeRegion = RRG.extract(places);
         System.out.println("대표지역 = " + RepresentativeRegion);
         List<String> expectedList = Arrays.asList("전국","인천","연수구","송도동");
         assertArrayEquals(expectedList.toArray(), RepresentativeRegion.toArray());
@@ -105,7 +105,7 @@ class regionApiTest {
         places.add(AddressDTO.builder().province("부산").city("동래구").district("사직동").detail("55-1").build());
         places.add(AddressDTO.builder().province("부산").city("동래구").district("사직동").detail("56-1").build());
 
-        List<String> RepresentativeRegion = RRG.generate(places);
+        List<String> RepresentativeRegion = RRG.extract(places);
         System.out.println("대표지역 = " + RepresentativeRegion);
         List<String> expectedList = Arrays.asList("전국","부산","동래구","사직동");
         assertArrayEquals(expectedList.toArray(), RepresentativeRegion.toArray());
@@ -119,7 +119,7 @@ class regionApiTest {
         places.add(AddressDTO.builder().province("부산").city("강서구").district("눌차동").detail("55-1").build());
 
 
-        List<String> RepresentativeRegion = RRG.generate(places);
+        List<String> RepresentativeRegion = RRG.extract(places);
         System.out.println("대표지역 = " + RepresentativeRegion);
         List<String> expectedList = Arrays.asList("전국","부산","서울","부산_강서구","서울_강서구","눌차동","등촌동");
         assertArrayEquals(expectedList.toArray(), RepresentativeRegion.toArray());
@@ -132,7 +132,7 @@ class regionApiTest {
         places.add(AddressDTO.builder().province("서울").city("팔달구").district("등촌동").detail("55-1").build());
 
 
-        List<String> RepresentativeRegion = RRG.generate(places);
+        List<String> RepresentativeRegion = RRG.extract(places);
         System.out.println("대표지역 = " + RepresentativeRegion);
         List<String> expectedList = Arrays.asList("전국","서울","강서구","팔달구","서울_팔달구_등촌동","서울_강서구_등촌동");
         assertArrayEquals(expectedList.toArray(), RepresentativeRegion.toArray());
@@ -148,7 +148,7 @@ class regionApiTest {
         places.add(AddressDTO.builder().province("인천").city("강서구").district("개안동").detail("55-1").build());
 
 
-        List<String> RepresentativeRegion = RRG.generate(places);
+        List<String> RepresentativeRegion = RRG.extract(places);
         System.out.println("대표지역 = " + RepresentativeRegion);
         List<String> expectedList = Arrays.asList("전국","인천","부산","서울","서울_강서구","부산_강서구","인천_강서구","눌차동","등촌동","개안동");
         assertArrayEquals(expectedList.toArray(), RepresentativeRegion.toArray());
@@ -160,7 +160,7 @@ class regionApiTest {
         places.add(AddressDTO.builder().province("경기").city("수원시").district("영통구").detail("이의동").build());
 
 
-        List<String> RepresentativeRegion = RRG.generate(places);
+        List<String> RepresentativeRegion = RRG.extract(places);
         System.out.println("대표지역 = " + RepresentativeRegion);
         List<String> expectedList = Arrays.asList("전국");
         assertArrayEquals(expectedList.toArray(), RepresentativeRegion.toArray());
@@ -169,7 +169,7 @@ class regionApiTest {
     void generateOne(){
         List<AddressDTO> places = new ArrayList<>();
         places.add(AddressDTO.builder().province("경기").city("부천시").district("소사구").detail("범박동 113-70").build());
-        List<String> RepresentativeRegion = RRG.generate(places);
+        List<String> RepresentativeRegion = RRG.extract(places);
         System.out.println("대표지역 = " + RepresentativeRegion);
         List<String> expectedList = Arrays.asList("전국","경기","부천시","소사구");
         assertArrayEquals(expectedList.toArray(), RepresentativeRegion.toArray());

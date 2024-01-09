@@ -1,9 +1,10 @@
-package io.mohajistudio.tangerine.prototype.infra.s3.config;
+package io.mohajistudio.tangerine.prototype.infra.upload.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ public class S3Config {
     @Value("${cloud.aws.region.static}")
     private String region;
 
+    @Getter
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -31,8 +33,5 @@ public class S3Config {
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
     }
-    @Bean
-    public String s3Bucket() {
-        return bucket;
-    }
+
 }

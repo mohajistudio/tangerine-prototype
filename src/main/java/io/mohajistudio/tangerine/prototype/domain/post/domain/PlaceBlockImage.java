@@ -34,8 +34,4 @@ public class PlaceBlockImage extends BaseEntity {
     public void setImageMimeType(String imageMimeType) {
         this.imageMimeType = ImageMimeType.fromValue(imageMimeType);
     }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 }
